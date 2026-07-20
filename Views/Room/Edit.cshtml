@@ -1,0 +1,35 @@
+@model otelrezervation.DTOs.UpdateRoomDto
+
+@{
+    ViewData["Title"] = "Oda Düzenle";
+}
+
+<div class="container mt-4">
+    <h2>Oda Düzenle</h2>
+    <hr />
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form asp-controller="Room" asp-action="Edit" asp-route-id="@ViewBag.RoomId" method="post">
+                        <div class="mb-3">
+                            <label asp-for="OdaNumarasi" class="form-label">Oda Numarası</label>
+                            <input asp-for="OdaNumarasi" class="form-control" />
+                            <span asp-validation-for="OdaNumarasi" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="GecelikFiyat" class="form-label">Gecelik Fiyat (₺)</label>
+                            <input asp-for="GecelikFiyat" type="number" step="0.01" class="form-control" />
+                            <span asp-validation-for="GecelikFiyat" class="text-danger"></span>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Değişiklikleri Kaydet</button>
+                        <a asp-controller="Room" asp-action="Index" class="btn btn-secondary">İptal</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
