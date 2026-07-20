@@ -1,0 +1,63 @@
+@model otelrezervation.DTOs.CreateReservationDto
+
+@{
+    ViewData["Title"] = "Yeni Rezervasyon Al";
+}
+
+<div class="container mt-4">
+    <h2>Yeni Rezervasyon</h2>
+    <hr />
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    
+                    @* Eğer Controller'dan ModelState error gelirse en tepede toptan göstersin diye *@
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert alert-danger">
+                            <div asp-validation-summary="All" class="text-danger mb-0"></div>
+                        </div>
+                    }
+
+                    <form asp-controller="Reservation" asp-action="Create" method="post">
+                        
+                        <div class="mb-3">
+                            <label asp-for="UserId" class="form-label">Müşteri Seçin</label>
+                            <!-- ViewBag içindeki Users listesini Dropdown (Select) olarak buraya basıyoruz -->
+                            <select asp-for="UserId" asp-items="ViewBag.Users" class="form-select">
+                                <option value="">-- Müşteri Seçiniz --</option>
+                            </select>
+                            <span asp-validation-for="UserId" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="RoomId" class="form-label">Oda Seçin</label>
+                            <!-- ViewBag içindeki Rooms listesini Dropdown (Select) olarak buraya basıyoruz -->
+                            <select asp-for="RoomId" asp-items="ViewBag.Rooms" class="form-select">
+                                <option value="">-- Oda Seçiniz --</option>
+                            </select>
+                            <span asp-validation-for="RoomId" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="GirisTarihi" class="form-label">Giriş Tarihi</label>
+                            <input asp-for="GirisTarihi" type="date" class="form-control" />
+                            <span asp-validation-for="GirisTarihi" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="CikisTarihi" class="form-label">Çıkış Tarihi</label>
+                            <input asp-for="CikisTarihi" type="date" class="form-control" />
+                            <span asp-validation-for="CikisTarihi" class="text-danger"></span>
+                        </div>
+
+                        <button type="submit" class="btn btn-success">Rezervasyonu Tamamla</button>
+                        <a asp-controller="Reservation" asp-action="Index" class="btn btn-secondary">İptal</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
