@@ -1,0 +1,39 @@
+@{
+    // Sayfanın başlığı (Tarayıcı sekmesinde yazacak olan kısım)
+    ViewData["Title"] = "Ana Sayfa";
+}
+
+<div class="text-center mt-5">
+    <h1 class="display-4 text-primary fw-bold">Otel Yönetim Sistemine Hoş Geldiniz</h1>
+    <p class="lead mt-3">Artık sadece bir API değiliz, görsel bir arayüzümüz (Web MVC) de var!</p>
+    
+    <div class="row mt-5">
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Müşteriler</h5>
+                    <p class="card-text">Sistemdeki tüm müşterileri buradan listeleyeceğiz.</p>
+                    <a href="/User/Index" class="btn btn-primary">Müşterileri Gör</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Odalar</h5>
+                    <p class="card-text">Odaların doluluk oranlarını ve fiyatlarını buradan göreceğiz.</p>
+                    <button class="btn btn-primary" disabled>Çok Yakında</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Rezervasyonlar</h5>
+                    <p class="card-text">Yeni rezervasyon alma ve iptal işlemlerini buradan yapacağız.</p>
+                    <button class="btn btn-primary" disabled>Çok Yakında</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

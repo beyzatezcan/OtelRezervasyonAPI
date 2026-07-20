@@ -1,0 +1,48 @@
+@model otelrezervation.DTOs.UpdateUserDto
+
+@{
+    ViewData["Title"] = "Müşteri Düzenle";
+}
+
+<div class="container mt-4">
+    <h2>Müşteri Düzenle</h2>
+    <hr />
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <!-- id bilgisi asp-route-id ile Controller'a gönderilir -->
+                    <form asp-action="Edit" asp-route-id="@ViewBag.UserId" method="post">
+                        <div class="mb-3">
+                            <label asp-for="Ad" class="form-label">Ad</label>
+                            <input asp-for="Ad" class="form-control" />
+                            <span asp-validation-for="Ad" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Soyad" class="form-label">Soyad</label>
+                            <input asp-for="Soyad" class="form-control" />
+                            <span asp-validation-for="Soyad" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label">E-Posta</label>
+                            <input asp-for="Email" type="email" class="form-control" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Telefon" class="form-label">Telefon Numarası</label>
+                            <input asp-for="Telefon" class="form-control" />
+                            <span asp-validation-for="Telefon" class="text-danger"></span>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Değişiklikleri Kaydet</button>
+                        <a href="/User/Index" class="btn btn-secondary">İptal (Geri Dön)</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
