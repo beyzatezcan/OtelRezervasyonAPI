@@ -1,9 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using otelrezervation.Models;
 using otelrezervation.Services;  // ← Service'leri tanıması için eklendi
+// PostgreSQL'in tarih formatı (UTC vs Local) hatasını önlemek için eski tip tarih kullanımını açıyoruz
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 var builder = WebApplication.CreateBuilder(args);
-
 // 1. Controller (API) ve Arayüz (MVC) Zekasını Sisteme Ekliyoruz
 builder.Services.AddControllersWithViews(); // YENİ: Views desteği eklendi
 builder.Services.AddEndpointsApiExplorer();
