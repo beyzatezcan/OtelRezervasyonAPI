@@ -7,6 +7,7 @@ namespace otelrezervation.Services;
 public class RoomService : IRoomService
 {
     private readonly AppDbContext _context;
+    private readonly Mappings.RoomMapper _mapper = new();
 
     public RoomService(AppDbContext context)
     {
@@ -18,12 +19,7 @@ public class RoomService : IRoomService
     {
         var rooms = await _context.Rooms.ToListAsync();
 
-        return rooms.Select(r => new RoomDto
-        {
-            Id = r.Id,
-            OdaNumarasi = r.OdaNumarasi,
-            GecelikFiyat = r.GecelikFiyat
-        }).ToList();
+        return rooms.Select(r => _mapper.RoomToRoomDto(r)).ToList();
     }
 
     // 2. ID'YE GORE TEK ODA GETIR
@@ -33,12 +29,7 @@ public class RoomService : IRoomService
 
         if (room == null) return null;
 
-        return new RoomDto
-        {
-            Id = room.Id,
-            OdaNumarasi = room.OdaNumarasi,
-            GecelikFiyat = room.GecelikFiyat
-        };
+        return _mapper.RoomToRoomDto(room);
     }
 
     // 3. YENI ODA EKLE
@@ -52,21 +43,12 @@ public class RoomService : IRoomService
             throw new InvalidOperationException($"{dto.OdaNumarasi} numarali oda zaten sistemde kayitli!");
         }
 
-        var yeniOda = new Room
-        {
-            OdaNumarasi = dto.OdaNumarasi,
-            GecelikFiyat = dto.GecelikFiyat
-        };
+        var yeniOda = _mapper.CreateRoomDtoToRoom(dto);
 
         _context.Rooms.Add(yeniOda);
         await _context.SaveChangesAsync();
 
-        return new RoomDto
-        {
-            Id = yeniOda.Id,
-            OdaNumarasi = yeniOda.OdaNumarasi,
-            GecelikFiyat = yeniOda.GecelikFiyat
-        };
+        return _mapper.RoomToRoomDto(yeniOda);
     }
 
     // 4. ODA GUNCELLE
@@ -85,17 +67,11 @@ public class RoomService : IRoomService
             throw new InvalidOperationException($"{dto.OdaNumarasi} numarali oda zaten baska bir kayit tarafindan kullaniliyor!");
         }
 
-        oda.OdaNumarasi = dto.OdaNumarasi;
-        oda.GecelikFiyat = dto.GecelikFiyat;
+        _mapper.UpdateRoomFromDto(dto, oda);
 
         await _context.SaveChangesAsync();
 
-        return new RoomDto
-        {
-            Id = oda.Id,
-            OdaNumarasi = oda.OdaNumarasi,
-            GecelikFiyat = oda.GecelikFiyat
-        };
+        return _mapper.RoomToRoomDto(oda);
     }
 
     // 5. ODA SIL
