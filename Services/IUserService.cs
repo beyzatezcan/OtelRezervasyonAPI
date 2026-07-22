@@ -3,8 +3,8 @@ using otelrezervation.DTOs;
 namespace otelrezervation.Services;
 
 // INTERFACE = MENU
-// "UserService su isleri yapabilir" diyor ama NASIL yapilacagini soylemiyor
-// Asil is mantigi UserService.cs'te (mutfakta) olacak
+// UserService su isleri yapabilir diyor ama nasil yapilacagini soylemiyor
+// Asil is mantigi UserService.cs'te olacak
 public interface IUserService
 {
     // tum kullanicilari listele

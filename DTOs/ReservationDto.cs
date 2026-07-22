@@ -1,13 +1,13 @@
 namespace otelrezervation.DTOs;
 
-// API'nin dışarıya döndüğü rezervasyon bilgisi (Çıkış DTO'su)
-// UserId YOK — başka müşterilerin kim olduğu gizli kalmalı
-// RoomId YOK — onun yerine oda numarasını gösteriyoruz (daha anlamlı)
+// API'nin disariya dondugu rezervasyon bilgisi (Cikis DTO'su)
+// UserId YOK — baska musterilerin kim oldugu gizli kalmalı
+// RoomId YOK — onun yerine oda numarasini gosteriyoruz 
 public class ReservationDto
 {
-    public int Id { get; set; }             // Rezervasyon numarası (takip için)
-    public string OdaNumarasi { get; set; } = string.Empty;  // RoomId yerine oda numarası
-    public string MusteriAdi { get; set; } = string.Empty;   // YENİ: UserId yerine müşterinin Ad+Soyad bilgisi
+    public int Id { get; set; }             // Rezervasyon numarasi (takip icin)
+    public string OdaNumarasi { get; set; } = string.Empty;  // RoomId yerine oda numarasi
+    public string MusteriAdi { get; set; } = string.Empty;   // YENI: UserId yerine musterinin Ad+Soyad bilgisi
     public DateTime GirisTarihi { get; set; }
     public DateTime CikisTarihi { get; set; }
 }

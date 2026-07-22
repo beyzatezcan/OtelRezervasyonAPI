@@ -4,17 +4,17 @@ public class Reservation
 {
     public int Id { get; set; }
     
-    // Bağlantı Noktaları (Foreign Keys)
-    public int UserId { get; set; } // Rezervasyonu HANGİ MÜŞTERİ yaptı?
-    public int RoomId { get; set; } // HANGİ ODA rezerve edildi?
+    // baglanti noktalar (foreign keys)
+    public int UserId { get; set; } // rezervasyonu hangi musteriyi yapti?
+    public int RoomId { get; set; } // hangi oda rezerve edildi?
     
-    // Tarih Bilgileri
+    // tarih bilgileri
     public DateTime GirisTarihi { get; set; }
     public DateTime CikisTarihi { get; set; }
 
-    // Navigation Property'ler (İlişkisel Bağlantılar)
-    // Bu sayede Reservation üzerinden Room ve User bilgilerine erişebiliriz
-    // Örnek: reservation.Room.OdaNumarasi
+    // navigation property'ler (iliskisel baglantilar)
+    // bu sayede reservation uzerinden room ve user bilgilerine erisebiliriz
+    // ornek: reservation.Room.OdaNumarasi
     public Room Room { get; set; } = null!;
     public User User { get; set; } = null!;
 }

@@ -2,8 +2,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace otelrezervation.DTOs;
 
-// Kullanıcı OLUŞTURMA formu — sadece müşterinin göndermesi gereken alanlar
-// Id YOK çünkü veritabanı otomatik verecek
+// kullanici olusturma formu sadece kullanicinin gondermesi gereken alanlar
+// id yok cunku veritabani otomatik verecek
 public class CreateUserDto
 {
     [Required(ErrorMessage = "Ad alanı zorunludur.")]

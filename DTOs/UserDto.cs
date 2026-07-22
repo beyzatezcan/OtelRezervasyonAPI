@@ -1,9 +1,9 @@
 namespace otelrezervation.DTOs;
 
-// API'nin dışarıya DÖNDÜĞÜ kullanıcı bilgisi (Çıkış DTO'su)
-// Şu an entity ile aynı görünüyor ama ileride User modeline
-// PasswordHash, TCKimlik gibi alanlar eklendiğinde
-// bu DTO sayesinde o hassas bilgiler dışarıya sızmaz
+// api'nin disariya dondurdugu kullanici bilgisi (cikis dto'su)
+// su an entity ile ayni gorunuyor ama ileride user modeline
+// passwordhash, tckimlik gibi alanlar eklendiginde
+// bu dto sayesinde o hassas bilgiler disariya sizmaz
 public class UserDto
 {
     public int Id { get; set; }

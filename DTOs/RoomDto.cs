@@ -1,8 +1,7 @@
 namespace otelrezervation.DTOs;
 
-// API'nin dışarıya döndüğü oda bilgisi (Çıkış DTO'su)
-// Reservations listesi YOK — dışarıdan biri odanın
-// tüm rezervasyonlarını görmemeli
+// api'nin disariya dondurdugu oda bilgisi (cikis dto'su)
+// reservations listesi yok disaridan biri odanin tum rezervasyonlarini gormemeli
 public class RoomDto
 {
     public int Id { get; set; }

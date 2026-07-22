@@ -2,9 +2,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace otelrezervation.DTOs;
 
-// Oda OLUŞTURMA formu
-// Id YOK — veritabanı verir
-// Reservations listesi YOK — oda yeni oluşuyor, henüz rezervasyon yok
+// oda olusturma formu
+// reservations listesi yok oda yeni olusuyor henuz rezervasyon yok
 public class CreateRoomDto
 {
     [Required(ErrorMessage = "Oda numarası zorunludur.")]
