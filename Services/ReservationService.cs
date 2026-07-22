@@ -7,6 +7,7 @@ namespace otelrezervation.Services;
 public class ReservationService : IReservationService
 {
     private readonly AppDbContext _context;
+    private readonly Mappings.ReservationMapper _mapper = new();
 
     public ReservationService(AppDbContext context)
     {
@@ -15,40 +16,33 @@ public class ReservationService : IReservationService
 
     public async Task<List<ReservationDto>> GetAllReservationsAsync()
     {
-        // Reservation'a bağlı Room ve User'ı da getir ki DTO'ya isimlerini verebilelim
+        // Reservation'a bagli Room ve User'i da getir ki DTO'ya isimlerini verebilelim
         var reservations = await _context.Reservations
             .Include(r => r.Room)
-            .Include(r => r.User) // YENİ: Kullanıcı bilgisini de çekiyoruz
+            .Include(r => r.User) // YENI: Kullanici bilgisini de cekiyoruz
             .ToListAsync();
 
-        return reservations.Select(r => new ReservationDto
-        {
-            Id = r.Id,
-            OdaNumarasi = r.Room.OdaNumarasi,
-            MusteriAdi = $"{r.User.Ad} {r.User.Soyad}", // YENİ: Ad ve Soyadı birleştirip veriyoruz
-            GirisTarihi = r.GirisTarihi,
-            CikisTarihi = r.CikisTarihi
-        }).ToList();
+        return reservations.Select(r => _mapper.ReservationToReservationDto(r)).ToList();
     }
 
     public async Task<ReservationDto> CreateReservationAsync(CreateReservationDto dto)
     {
-        // 1. GUVENLIK: Müşteri var mı?
+        // 1. GUVENLIK: musteri var mi?
         var user = await _context.Users.FindAsync(dto.UserId);
         if (user == null)
             throw new InvalidOperationException("Rezervasyon yapılmak istenen müşteri sistemde bulunamadı!");
 
-        // 2. GUVENLIK: Oda var mı?
+        // 2. GUVENLIK: Oda var mi?
         var room = await _context.Rooms.FindAsync(dto.RoomId);
         if (room == null)
             throw new InvalidOperationException("Rezerve edilmek istenen oda sistemde bulunamadı!");
 
-        // 3. GUVENLIK (YENI): Tarih Validasyonu
-        // Giriş tarihi geçmiş bir tarih olamaz (bugünden önce olamaz)
+        // 3. GUVENLIK : Tarih Validasyonu
+        // Giris tarihi gecmis bir tarih olamaz (bugunden once olamaz)
         if (dto.GirisTarihi.Date < DateTime.Now.Date)
-            throw new InvalidOperationException("Geçmiş bir tarihe rezervasyon yapılamaz!");
+            throw new InvalidOperationException("Gecmis bir tarihe rezervasyon yapilamaz!");
 
-        // Çıkış tarihi giriş tarihinden önce veya aynı gün olamaz
+        // Cikis tarihi giris tarihinden once veya ayni gun olamaz
         if (dto.CikisTarihi <= dto.GirisTarihi)
             throw new InvalidOperationException("Çıkış tarihi, giriş tarihinden sonra olmalıdır!");
 
@@ -61,27 +55,17 @@ public class ReservationService : IReservationService
         if (isRoomTaken)
             throw new InvalidOperationException("Seçilen oda belirtilen tarihler arasında zaten dolu!");
 
-        var yeniRezervasyon = new Reservation
-        {
-            UserId = dto.UserId,
-            RoomId = dto.RoomId,
-            GirisTarihi = dto.GirisTarihi,
-            CikisTarihi = dto.CikisTarihi
-        };
-
+        // HERSEY OKSA: Rezervasyonu Ekle
+        var yeniRezervasyon = _mapper.CreateReservationDtoToReservation(dto);
+        //VERITABANINA KAYDET
         _context.Reservations.Add(yeniRezervasyon);
         await _context.SaveChangesAsync();
 
-        return new ReservationDto
-        {
-            Id = yeniRezervasyon.Id,
-            OdaNumarasi = room.OdaNumarasi,
-            MusteriAdi = $"{user.Ad} {user.Soyad}",
-            GirisTarihi = yeniRezervasyon.GirisTarihi,
-            CikisTarihi = yeniRezervasyon.CikisTarihi
-        };
-    }
+        yeniRezervasyon.User = user;
+        yeniRezervasyon.Room = room;
 
+        return _mapper.ReservationToReservationDto(yeniRezervasyon);
+    }
     public async Task<bool> DeleteReservationAsync(int id)
     {
         var rezervasyon = await _context.Reservations.FindAsync(id);
