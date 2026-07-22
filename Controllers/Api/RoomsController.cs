@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using otelrezervation.DTOs;
-using otelrezervation.Services; // Service'i kullanmak için
+using otelrezervation.Services; 
 
 namespace otelrezervation.Controllers.Api;
 
@@ -8,8 +8,7 @@ namespace otelrezervation.Controllers.Api;
 [ApiController]
 public class RoomsController : ControllerBase
 {
-    // AppDbContext (veritabanı) GİTTİ! 
-    // Sadece IRoomService (menü) VAR!
+    // Sadece IRoomService kullaniyoruz menu gibi dusunebiliriz interface
     private readonly IRoomService _roomService;
 
     public RoomsController(IRoomService roomService)
@@ -17,16 +16,16 @@ public class RoomsController : ControllerBase
         _roomService = roomService;
     }
 
-    // Tüm Odaları Listele (GET)
+    // Tum odalari listele (GET)
     [HttpGet]
     public async Task<IActionResult> GetRooms()
     {
-        // Tüm işi servise pasladık
+        // Tum isleri servise pasladik
         var rooms = await _roomService.GetAllRoomsAsync();
         return Ok(rooms);
     }
     
-    // Id'ye Göre Tek Oda Getir (GET) - Yeni eklendi!
+    // Id'ye Gore Tek Oda Getir (GET) 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetRoom(int id)
     {
@@ -38,24 +37,23 @@ public class RoomsController : ControllerBase
         return Ok(room);
     }
 
-    // Odaya Yeni Kayıt Ekleme (POST)
+    // Odaya yeni kayit ekleme (POST)
     [HttpPost]
     public async Task<IActionResult> AddRoom(CreateRoomDto dto)
     {
         try
         {
-            // Oda var mı kontrolünü ve eklemeyi servis yapıyor, biz sadece sonucu dönüyoruz
+            // Oda var mi kontrolu ve eklemeyi servis yapiyor, biz sadece sonucu donuyoruz
             var room = await _roomService.CreateRoomAsync(dto);
             return Ok(room);
         }
         catch (InvalidOperationException ex)
         {
-            // Eğer servis "Oda numarası kullanılıyor" diye hata fırlatırsa 400 Bad Request dön
             return BadRequest(ex.Message);
         }
     }
 
-    // Odayı Güncelleme (PUT)
+    // Odayi guncelleme (PUT)
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateRoom(int id, UpdateRoomDto dto)
     {
@@ -74,7 +72,7 @@ public class RoomsController : ControllerBase
         }
     }
 
-    // Odayı Silme (DELETE)
+    // Odayi silme (DELETE)
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteRoom(int id)
     {
@@ -85,11 +83,10 @@ public class RoomsController : ControllerBase
             if (!result)
                 return NotFound("Silinecek oda bulunamadı.");
 
-            return Ok("Oda başarıyla silindi.");
+            return Ok("Oda basariyla silindi.");
         }
         catch (InvalidOperationException ex)
         {
-            // Servis "Aktif rezervasyon var, silemezsin!" derse buraya düşecek
             return BadRequest(ex.Message);
         }
     }

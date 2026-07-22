@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using otelrezervation.DTOs;
-using otelrezervation.Services;  // ← Service'i kullanmak için
+using otelrezervation.Services;  
 
 namespace otelrezervation.Controllers.Api;
 
@@ -8,8 +8,6 @@ namespace otelrezervation.Controllers.Api;
 [ApiController]
 public class UsersController : ControllerBase
 {
-    // ESKİ: private readonly AppDbContext _context;        → Veritabanı direkt controller'daydı
-    // YENİ: private readonly IUserService _userService;    → Artık Service'e soruyor
     private readonly IUserService _userService;
 
     public UsersController(IUserService userService)
@@ -17,7 +15,7 @@ public class UsersController : ControllerBase
         _userService = userService;
     }
 
-    // 1. LİSTELEME — Eskiden 10+ satırdı, şimdi 2 satır
+    // 1. Liste
     [HttpGet]
     public async Task<IActionResult> GetUsers()
     {
@@ -25,7 +23,7 @@ public class UsersController : ControllerBase
         return Ok(users);
     }
 
-    // 2. TEK KULLANICI GETİRME — Yeni özellik (Service'te hazırlamıştık)
+    // 2. tek kullaniciyi getirme
     [HttpGet("{id}")]
     public async Task<IActionResult> GetUser(int id)
     {
@@ -37,8 +35,7 @@ public class UsersController : ControllerBase
         return Ok(user);
     }
 
-    // 3. EKLEME — Eskiden email kontrolü, entity çevirisi hep buradaydı
-    // Şimdi controller sadece "Service'e ver, sonucu dön" diyor
+    // 3. yeni kullanici ekleme
     [HttpPost]
     public async Task<IActionResult> AddUser(CreateUserDto dto)
     {
@@ -49,12 +46,11 @@ public class UsersController : ControllerBase
         }
         catch (InvalidOperationException ex)
         {
-            // Service hata fırlattıysa (email zaten var gibi) → 400 dön
             return BadRequest(ex.Message);
         }
     }
 
-    // 4. GÜNCELLEME
+    // 4. kullaniciyi guncelleme
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateUser(int id, UpdateUserDto dto)
     {
@@ -73,7 +69,7 @@ public class UsersController : ControllerBase
         }
     }
 
-    // 5. SİLME
+    // 5. kullaniciyi silme
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteUser(int id)
     {
@@ -82,7 +78,7 @@ public class UsersController : ControllerBase
             var result = await _userService.DeleteUserAsync(id);
 
             if (!result)
-                return NotFound("Silinecek kullanıcı bulunamadı.");
+                return NotFound("Kullanıcı bulunamadı.");
 
             return Ok("Kullanıcı başarıyla silindi.");
         }

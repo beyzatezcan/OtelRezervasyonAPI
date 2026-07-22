@@ -1,99 +1,91 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using otelrezervation.Services;
 using otelrezervation.DTOs;
 
 namespace otelrezervation.Controllers.Web;
 
+[Authorize]
 public class ReservationController : Controller
 {
     private readonly IReservationService _reservationService;
-    private readonly IUserService _userService;
     private readonly IRoomService _roomService;
+    private readonly IUserService _userService;
 
-    // controller sadece kendi servisini degil, User ve Room bilgilerini almak icin
-    // diger servisleri de kullanacak.
-    public ReservationController(IReservationService reservationService, IUserService userService, IRoomService roomService)
+    public ReservationController(IReservationService reservationService, IRoomService roomService, IUserService userService)
     {
         _reservationService = reservationService;
-        _userService = userService;
         _roomService = roomService;
+        _userService = userService;
     }
 
-    // 1. rezervasyonlari listele
+    // 1. Tüm rezervasyonları listele (Index)
+    [HttpGet]
     public async Task<IActionResult> Index()
     {
         var reservations = await _reservationService.GetAllReservationsAsync();
         return View(reservations);
     }
 
-    // 2. yeni rezervasyon formunu goster
+    // 2. Yeni rezervasyon formunu göster (Create GET)
     [HttpGet]
     public async Task<IActionResult> Create()
     {
-        await DoldurSecimKutulariniAsync();
-        
+        await DoldurSelectList();
         return View();
     }
 
-    // 3. rezervasyon formunu kaydet
+    // 3. Formdan gelen rezervasyonu kaydet (Create POST)
     [HttpPost]
     public async Task<IActionResult> Create(CreateReservationDto dto)
     {
         if (!ModelState.IsValid)
         {
-            await DoldurSecimKutulariniAsync();
+            await DoldurSelectList();
             return View(dto);
         }
 
         try
         {
             await _reservationService.CreateReservationAsync(dto);
-            TempData["SuccessMessage"] = "Rezervasyon başarıyla oluşturuldu.";
+            TempData["SuccessMessage"] = "Rezervasyon başarıyla eklendi.";
             return RedirectToAction("Index");
         }
         catch (InvalidOperationException ex)
         {
-            // servisten gelen kurallar (Tarih gecmise ait olamaz, oda dolu vb.) hatalari
-            await DoldurSecimKutulariniAsync();
             ModelState.AddModelError("", ex.Message);
+            await DoldurSelectList();
             return View(dto);
         }
     }
 
-    // 4. rezervasyonu iptal et (sil)
+    // 4. Rezervasyon Silme (Delete POST)
     [HttpPost]
     public async Task<IActionResult> Delete(int id)
     {
         var result = await _reservationService.DeleteReservationAsync(id);
         if (result)
         {
-            TempData["SuccessMessage"] = "Rezervasyon başarıyla iptal edildi.";
+            TempData["SuccessMessage"] = "Rezervasyon iptal edildi.";
         }
         else
         {
             TempData["ErrorMessage"] = "İptal edilecek rezervasyon bulunamadı.";
         }
-
         return RedirectToAction("Index");
     }
 
-    // html ile olusturdugumuz secim (dropdown) kutularini doldurur
-    private async Task DoldurSecimKutulariniAsync()
+    // YARDIMCI METOT: Dropdownları doldurur
+    private async Task DoldurSelectList()
     {
-        // tum musterileri ve odalari veritabanindan cekiyoruz
-        var users = await _userService.GetAllUsersAsync();
         var rooms = await _roomService.GetAllRoomsAsync();
+        var users = await _userService.GetAllUsersAsync();
 
-        // musterilerin adi ve soyadini birlestiriyoruz
-        var userList = users.Select(u => new 
-        { 
-            Id = u.Id, 
-            AdSoyad = u.Ad + " " + u.Soyad 
-        }).ToList();
-        
-        // ViewBag (Hafıza) içine listeleri ekliyoruz, View (HTML) bunları kullanacak
-        ViewBag.Users = new SelectList(userList, "Id", "AdSoyad");
+        // İsim Soyisim birlikte göstermek için anonim obje listesi yapıyoruz
+        var userList = users.Select(u => new { Id = u.Id, FullName = u.Ad + " " + u.Soyad }).ToList();
+
         ViewBag.Rooms = new SelectList(rooms, "Id", "OdaNumarasi");
+        ViewBag.Users = new SelectList(userList, "Id", "FullName");
     }
 }

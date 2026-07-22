@@ -2,53 +2,53 @@ using Microsoft.AspNetCore.Mvc;
 using otelrezervation.Services; 
 using otelrezervation.DTOs; 
 
-namespace otelrezervation.Controllers.Web;
+namespace otelrezervation.Controllers;
 
-// API'deki UsersController ile karismamasi icin adini UserController yaptik.
-// Bu controller JSON degil, dogrudan HTML sayfasini (View) donecek.
+// DİKKAT: API'deki UsersController ile karışmaması için adını UserController yaptık.
+// Bu controller JSON değil, doğrudan HTML sayfası (View) dönecek.
 public class UserController : Controller
 {
     private readonly IUserService _userService;
 
-
+    // Mutfağı (Service) garsona veriyoruz
     public UserController(IUserService userService)
     {
         _userService = userService;
     }
 
-    // Musteriler sayfasına girildiginde calisacak metod
+    // Müşteriler sayfasına girildiğinde çalışacak metod
     public async Task<IActionResult> Index()
     {
-        // 1. servisten tum musterileri iste 
+        // 1. Mutfaktan tüm müşterileri iste (Bu metodu önceden sen yazmıştın!)
         var users = await _userService.GetAllUsersAsync();
 
-        // 2. gelen musteri listesini HTML sayfasına (View'a) gonder
+        // 2. Gelen müşteri listesini HTML sayfasına (View'a) gönder
         return View(users);
     }
 
-    // Kullanici ekleme (CREATE)
-    // 1. Kullaniciya bos formu gostermek icin (Sadece HTML sayfasini açar)
+    // --- YENİ MÜŞTERİ EKLEME (CREATE) ---
+    // 1. Kullanıcıya boş formu göstermek için (Sadece HTML sayfasını açar)
     [HttpGet]
     public IActionResult Create()
     {
         return View();
     }
 
-    // 2. Kullanicinin doldurdugu formu alip veritabanina kaydetmek icin
+    // 2. Kullanıcının doldurduğu formu alıp veritabanına kaydetmek için
     [HttpPost]
     public async Task<IActionResult> Create(CreateUserDto dto)
     {
-        // Eger kullanici formda eksik/hatali bilgi girerse (Email formati yanlisi gibi)
+        // Eğer kullanıcı formda eksik/hatalı bilgi girerse (Email formatı yanlışı gibi)
         if (!ModelState.IsValid)
-            return View(dto); 
+            return View(dto); // Hatalı kısımları formda kalsın diye geri döndür
 
         await _userService.CreateUserAsync(dto);
         TempData["SuccessMessage"] = "Müşteri başarıyla eklendi.";
-        return RedirectToAction("Index"); 
+        return RedirectToAction("Index"); // İşlem bitince listeye geri dön
     }
 
-    // MUSteri duzenleme (EDIT)
-    // 1. Kullanicinin eski bilgilerini bulup formun icini doldurmak icin
+    // --- MÜŞTERİ DÜZENLEME (EDIT) ---
+    // 1. Kullanıcının eski bilgilerini bulup formun içini doldurmak için
     [HttpGet]
     public async Task<IActionResult> Edit(int id)
     {
@@ -59,7 +59,7 @@ public class UserController : Controller
             return RedirectToAction("Index");
         }
 
-        // Musterinin eski bilgilerini Update formuna aktaralim
+        // Müşterinin eski bilgilerini Update formuna aktaralım
         var updateDto = new UpdateUserDto
         {
             Ad = user.Ad,
@@ -68,18 +68,18 @@ public class UserController : Controller
             Telefon = user.Telefon
         };
 
-        // Form gonderilirken ID'ye ihtiyacimiz olacak, o yuzden ID'yi hafizaya (ViewBag) atiyoruz
+        // Form gönderilirken ID'ye ihtiyacımız olacak, o yüzden ID'yi hafızaya (ViewBag) atıyoruz
         ViewBag.UserId = user.Id;
         return View(updateDto);
     }
 
-    // 2. Formdaki guncel bilgileri kaydetmek icin
+    // 2. Formdaki güncel bilgileri kaydetmek için
     [HttpPost]
     public async Task<IActionResult> Edit(int id, UpdateUserDto dto)
     {
         if (!ModelState.IsValid)
         {
-            ViewBag.UserId = id; // Hata durumunda formu geri basarken ID'yi unutmamak icin
+            ViewBag.UserId = id; // Hata durumunda formu geri basarken ID'yi unutmamak için
             return View(dto);
         }
 
@@ -96,7 +96,7 @@ public class UserController : Controller
         return RedirectToAction("Index");
     }
 
-    //  Kullanici silme islemi
+    // YENİ: Kullanıcı silme işlemi
     [HttpPost]
     public async Task<IActionResult> Delete(int id)
     {
@@ -105,9 +105,7 @@ public class UserController : Controller
             var result = await _userService.DeleteUserAsync(id);
             if (result)
             {
-                // İslem basariliysa TempData ile View'a mesaj gönderiyoruz
-                // TempData -bir sonraki request boyunca gecerli olan degisken
-                // kullanici sayfayi yenilese bile mesaj gorunur    
+                // İşlem başarılıysa TempData ile View'a mesaj gönderiyoruz
                 TempData["SuccessMessage"] = "Müşteri başarıyla silindi.";
             }
             else

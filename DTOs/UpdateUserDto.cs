@@ -2,10 +2,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace otelrezervation.DTOs;
 
-// Kullanıcı GÜNCELLEME formu
-// CreateUserDto ile aynı görünüyor ama ayrı tutuyoruz
-// Çünkü ileride "güncelleme sırasında email değiştirilemez" gibi
-// bir kural koymak istersen, buradan Email alanını çıkarırsın
+// kullanici guncelleme formu
+// createuserdto ile ayni gorunuyor ama ayri tutuyoruz
+// cunku ileride "guncelleme sirasinda email degistirilemez" gibi
+// bir kural koymak istersek buradan email alanini cikaririz
 public class UpdateUserDto
 {
     [Required(ErrorMessage = "Ad alanı zorunludur.")]

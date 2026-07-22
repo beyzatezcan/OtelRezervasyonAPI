@@ -20,20 +20,36 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/">Ana Sayfa</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="Room" asp-action="Index">Odalar</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/swagger">Swagger API Test</a>
-                    </li>
+                    @if (User.Identity != null && User.Identity.IsAuthenticated)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="User" asp-action="Index">Müşteriler</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Room" asp-action="Index">Odalar</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Reservation" asp-action="Index">Rezervasyonlar</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/swagger">Swagger API Test</a>
+                        </li>
+                    }
                 </ul>
             </div>
         </div>
     </nav>
 
     <!-- İçerik Alanı -->
-    <!-- RenderBody() kısmı, diğer HTML sayfalarımızın (Örn: Index.cshtml) gelip buraya yerleşmesini sağlar. -->
     <div class="container">
+        @if (User.Identity != null && User.Identity.IsAuthenticated)
+        {
+            <div class="d-flex justify-content-end align-items-center mb-3">
+                <span class="text-muted me-3">Hoşgeldiniz, <strong class="text-dark">@User.Identity.Name</strong></span>
+                <a asp-controller="Auth" asp-action="Logout" class="btn btn-outline-danger btn-sm"><i class="bi bi-box-arrow-right me-1"></i>Çıkış Yap</a>
+            </div>
+        }
+        
         <main role="main" class="pb-3">
             @RenderBody()
         </main>

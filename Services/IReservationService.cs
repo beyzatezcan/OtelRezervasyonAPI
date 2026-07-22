@@ -4,12 +4,12 @@ namespace otelrezervation.Services;
 
 public interface IReservationService
 {
-    // Tüm rezervasyonları listele
+    // tum rezervasyonlari listele
     Task<List<ReservationDto>> GetAllReservationsAsync();
 
-    // Yeni rezervasyon yap
+    // yeni rezervasyon yap
     Task<ReservationDto> CreateReservationAsync(CreateReservationDto dto);
 
-    // Rezervasyon iptal et (sil) - Eskiden bu özellik yoktu!
+    // rezervsyon iptal et (sil) 
     Task<bool> DeleteReservationAsync(int id);
 }

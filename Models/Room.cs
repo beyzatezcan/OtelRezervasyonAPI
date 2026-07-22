@@ -6,6 +6,7 @@ public class Room
     public string OdaNumarasi { get; set; } = string.Empty;
     public decimal GecelikFiyat { get; set; }
 
-    // Entity Framework'e İlişkiyi Anlatıyoruz (1:N)
+    // entity frameworke iliskiyi anlatiyoruz 1:N
+    // bir odanin birden fazla rezervasyonu olabilir
     public List<Reservation> Reservations { get; set; } = new();
 }

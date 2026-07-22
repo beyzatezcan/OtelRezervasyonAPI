@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using otelrezervation.DTOs;
-using otelrezervation.Services; // Service kullanımı için eklendi
+using otelrezervation.Services; 
 
 namespace otelrezervation.Controllers.Api;
 
@@ -15,7 +15,7 @@ public class ReservationsController : ControllerBase
         _reservationService = reservationService;
     }
 
-    // 1. Tüm Rezervasyonları Listele (GET)
+    // 1. tum rezervasyonları getir (GET)
     [HttpGet]
     public async Task<IActionResult> GetReservations()
     {
@@ -23,7 +23,7 @@ public class ReservationsController : ControllerBase
         return Ok(reservations);
     }
 
-    // 2. Yeni Rezervasyon Yap (POST)
+    // 2. yeni rezervasyon yap (POST)
     [HttpPost]
     public async Task<IActionResult> MakeReservation(CreateReservationDto dto)
     {
@@ -38,7 +38,7 @@ public class ReservationsController : ControllerBase
         }
     }
 
-    // 3. Rezervasyon İptal Et (DELETE)
+    // 3. rezervasyonu iptal et (DELETE)
     [HttpDelete("{id}")]
     public async Task<IActionResult> CancelReservation(int id)
     {

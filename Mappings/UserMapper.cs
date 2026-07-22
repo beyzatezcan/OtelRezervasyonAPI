@@ -7,12 +7,12 @@ namespace otelrezervation.Mappings;
 [Mapper]
 public partial class UserMapper
 {
-    // Veritabanı modelini DTO'ya çevirir
+    // Veritabani modelini DTO'ya cevirir
     public partial UserDto UserToUserDto(User user);
 
-    // Yeni oluşturulan DTO'yu veritabanı modeline çevirir
+    // Yeni olusturulan DTO'yu veritabani modeline cevirir
     public partial User CreateUserDtoToUser(CreateUserDto dto);
 
-    // Güncelleme işlemi için DTO'daki verileri varolan User nesnesinin içine aktarır
+    // Guncelleme islemi icin DTO'daki verileri varolan User nesnesinin icine aktarir
     public partial void UpdateUserFromDto(UpdateUserDto dto, User user);
 }

@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace otelrezervation.DTOs;
 
-// Oda GÜNCELLEME formu
+// oda guncelleme formu
 public class UpdateRoomDto
 {
     [Required(ErrorMessage = "Oda numarası zorunludur.")]
