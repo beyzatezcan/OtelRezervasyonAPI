@@ -5,7 +5,7 @@ using otelrezervation.DTOs;
 
 namespace otelrezervation.Controllers.Web;
 
-[Authorize] // sadece login olanlar erisebilir
+[Authorize(Roles = "Admin")]
 public class RoomController : Controller
 {
     private readonly IRoomService _roomService;

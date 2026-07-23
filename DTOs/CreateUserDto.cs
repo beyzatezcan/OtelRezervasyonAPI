@@ -21,4 +21,7 @@ public class CreateUserDto
     [Required(ErrorMessage = "Telefon alanı zorunludur.")]
     [Phone(ErrorMessage = "Geçerli bir telefon numarası girin.")]
     public string Telefon { get; set; } = string.Empty;
+
+    [Required(ErrorMessage = "Şifre alanı zorunludur.")]
+    public string Password { get; set; } = string.Empty;
 }

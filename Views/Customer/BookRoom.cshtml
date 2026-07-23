@@ -1,0 +1,103 @@
+@model otelrezervation.DTOs.CreateReservationDto
+@{
+    ViewData["Title"] = "Oda Ayırt";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm border-0 rounded-4 mt-4">
+            <div class="card-header bg-primary text-white p-4 rounded-top-4">
+                <h3 class="mb-0 fw-bold"><i class="bi bi-calendar-check me-2"></i> Rezervasyon Yap</h3>
+            </div>
+            <div class="card-body p-4">
+                
+                <div class="alert alert-info d-flex align-items-center mb-4">
+                    <i class="bi bi-info-circle-fill fs-3 me-3"></i>
+                    <div>
+                        Seçtiğiniz Oda: <strong>@ViewBag.OdaNumarasi</strong> <br/>
+                        Gecelik Fiyat: <strong class="text-success">@ViewBag.GecelikFiyat.ToString("C")</strong>
+                    </div>
+                </div>
+
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div class="alert alert-danger p-3">
+                        <div asp-validation-summary="All" class="text-danger mb-0"></div>
+                    </div>
+                }
+
+                <form asp-action="BookRoom" method="post">
+                    <!-- Gizli Alanlar -->
+                    <input type="hidden" asp-for="RoomId" />
+                    <input type="hidden" asp-for="UserId" />
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <label asp-for="GirisTarihi" class="form-label fw-bold">Giriş Tarihi</label>
+                            <input asp-for="GirisTarihi" type="text" class="form-control form-control-lg bg-white" placeholder="Tarih seçin..." />
+                            <span asp-validation-for="GirisTarihi" class="text-danger small"></span>
+                        </div>
+                        
+                        <div class="col-md-6 mb-4">
+                            <label asp-for="CikisTarihi" class="form-label fw-bold">Çıkış Tarihi</label>
+                            <input asp-for="CikisTarihi" type="text" class="form-control form-control-lg bg-white" placeholder="Tarih seçin..." />
+                            <span asp-validation-for="CikisTarihi" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-light btn-lg px-4 shadow-sm border">İptal</a>
+                        <button type="submit" class="btn btn-success btn-lg px-5 shadow-sm fw-bold"><i class="bi bi-check2-circle me-2"></i>Rezervasyonu Onayla</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://npmcdn.com/flatpickr/dist/l10n/tr.js"></script>
+
+<style>
+    /* Dolu günlerin üstü çizili ve kırmızı görünmesi için özel stil (Booking.com benzeri) */
+    .flatpickr-day.disabled, .flatpickr-day.disabled:hover {
+        background-color: #ffe0e0 !important;
+        color: #d9534f !important;
+        text-decoration: line-through !important;
+        font-weight: bold;
+        border-color: #ffe0e0 !important;
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // MVC'den gelen JSON stringini dogrudan javascript objesi olarak render ediyoruz.
+        var tarihler = @Html.Raw(string.IsNullOrEmpty(ViewBag.DoluTarihler) ? "[]" : ViewBag.DoluTarihler);
+        var disableDates = [];
+        
+        if (Array.isArray(tarihler)) {
+            tarihler.forEach(function(item) {
+                if(item && item.Giris && item.Cikis) {
+                    disableDates.push({
+                        from: item.Giris.split('T')[0],
+                        to: item.Cikis.split('T')[0]
+                    });
+                }
+            });
+        }
+
+        var fpOptions = {
+            locale: "tr",
+            dateFormat: "Y-m-d", // Form submit degeri
+            altInput: true,      // Kullaniciya ozel format
+            altFormat: "d F Y",  // ornegin 25 Temmuz 2026
+            minDate: "today",
+            disable: disableDates,
+            inline: true // Takvimin popup degil, sayfada sabit CIZELGE seklinde acik kalmasi
+        };
+
+        flatpickr("#GirisTarihi", fpOptions);
+        flatpickr("#CikisTarihi", fpOptions);
+    });
+</script>
