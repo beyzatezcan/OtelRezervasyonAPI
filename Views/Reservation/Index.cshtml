@@ -1,66 +1,62 @@
-@model List<otelrezervation.DTOs.ReservationDto>
-
+@model IEnumerable<otelrezervation.DTOs.ReservationDto>
 @{
-    ViewData["Title"] = "Rezervasyonlar";
+    ViewData["Title"] = "Tüm Rezervasyonlar (Yönetici Paneli)";
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2><i class="bi bi-calendar-check text-primary"></i> Rezervasyon Listesi</h2>
-    <a asp-action="Create" class="btn btn-success"><i class="bi bi-plus-circle"></i> Yeni Rezervasyon Ekle</a>
+    <h2 class="fw-bold text-dark"><i class="bi bi-journal-bookmark-fill text-primary me-2"></i>Tüm Rezervasyonlar</h2>
+    <a asp-action="Create" class="btn btn-dark shadow-sm"><i class="bi bi-plus-circle me-2"></i>Manuel Rezervasyon Ekle</a>
 </div>
 
 @if (TempData["SuccessMessage"] != null)
 {
-    <div class="alert alert-success alert-dismissible fade show">
-        @TempData["SuccessMessage"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    <div class="alert alert-success shadow-sm">
+        <i class="bi bi-check-circle-fill me-2"></i> @TempData["SuccessMessage"]
     </div>
 }
 
-@if (TempData["ErrorMessage"] != null)
-{
-    <div class="alert alert-danger alert-dismissible fade show">
-        @TempData["ErrorMessage"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-}
-
-<div class="card shadow-sm">
-    <div class="card-body">
-        <table class="table table-hover align-middle">
-            <thead class="table-light">
-                <tr>
-                    <th>#ID</th>
-                    <th>Oda No</th>
-                    <th>Müşteri Adı</th>
-                    <th>Giriş Tarihi</th>
-                    <th>Çıkış Tarihi</th>
-                    <th class="text-end">İşlemler</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var res in Model)
-                {
-                    <tr>
-                        <td>@res.Id</td>
-                        <td><span class="badge bg-info text-dark fs-6">@res.OdaNumarasi</span></td>
-                        <td class="fw-bold">@res.MusteriAdi</td>
-                        <td>@res.GirisTarihi.ToShortDateString()</td>
-                        <td>@res.CikisTarihi.ToShortDateString()</td>
-                        <td class="text-end">
-                            <form asp-action="Delete" asp-route-id="@res.Id" method="post" style="display:inline;" onsubmit="return confirm('Bu rezervasyonu iptal etmek istediğinize emin misiniz?');">
-                                <button type="submit" class="btn btn-danger btn-sm">
-                                    <i class="bi bi-trash"></i> İptal Et
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-        @if (!Model.Any())
+<div class="card shadow-sm border-0 rounded-4">
+    <div class="card-body p-0">
+        @if (Model != null && Model.Any())
         {
-            <div class="text-center text-muted my-4">Henüz hiç rezervasyon yok.</div>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-4">ID</th>
+                            <th>Oda No</th>
+                            <th>Müşteri Adı</th>
+                            <th>Giriş Tarihi</th>
+                            <th>Çıkış Tarihi</th>
+                            <th class="text-end pe-4">İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var res in Model)
+                        {
+                            <tr>
+                                <td class="ps-4 text-muted fw-bold">#@res.Id</td>
+                                <td class="fw-bold text-primary">@res.OdaNumarasi</td>
+                                <td>@res.MusteriAdi</td>
+                                <td><span class="badge bg-success">@res.GirisTarihi.ToString("dd.MM.yyyy")</span></td>
+                                <td><span class="badge bg-danger">@res.CikisTarihi.ToString("dd.MM.yyyy")</span></td>
+                                <td class="text-end pe-4">
+                                    <form asp-action="Delete" asp-route-id="@res.Id" method="post" class="d-inline" onsubmit="return confirm('Bu rezervasyonu sistemden tamamen silmek istediğinize emin misiniz? (Müşteri de göremeyecek!)');">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash-fill"></i> Sil</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="p-5 text-center text-muted">
+                <i class="bi bi-inbox-fill display-4 mb-3 d-block"></i>
+                <h5>Sistemde kayıtlı hiçbir rezervasyon bulunmuyor.</h5>
+            </div>
         }
     </div>
 </div>

@@ -1,60 +1,133 @@
 @model otelrezervation.DTOs.CreateReservationDto
 @{
-    ViewData["Title"] = "Yeni Rezervasyon";
+    ViewData["Title"] = "Yeni Rezervasyon (Yönetici)";
 }
 
-<div class="row justify-content-center mt-4">
-    <div class="col-md-6">
-        <div class="card shadow-sm">
-            <div class="card-header bg-success text-white">
-                <h4 class="mb-0"><i class="bi bi-calendar-plus"></i> Yeni Rezervasyon Al</h4>
+<div class="card shadow-sm border-0 rounded-4 mt-4">
+    <div class="card-header bg-dark text-white p-4 rounded-top-4">
+        <h3 class="mb-0 fw-bold"><i class="bi bi-pencil-square me-2"></i> Manuel Rezervasyon Oluştur</h3>
+    </div>
+    <div class="card-body p-4">
+        
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="alert alert-danger p-3">
+                <div asp-validation-summary="All" class="text-danger mb-0"></div>
             </div>
-            <div class="card-body">
+        }
 
-                @if (!ViewData.ModelState.IsValid)
-                {
-                    <div class="alert alert-danger">
-                        <div asp-validation-summary="All" class="text-danger mb-0"></div>
-                    </div>
-                }
-
-                <form asp-action="Create" method="post">
-                    
-                    <div class="mb-3">
-                        <label asp-for="UserId" class="form-label fw-bold">Müşteri Seçin</label>
-                        <select asp-for="UserId" class="form-select" asp-items="ViewBag.Users">
-                            <option value="">-- Müşteri Seç --</option>
-                        </select>
-                        <span asp-validation-for="UserId" class="text-danger"></span>
-                    </div>
-
-                    <div class="mb-3">
-                        <label asp-for="RoomId" class="form-label fw-bold">Oda Seçin</label>
-                        <select asp-for="RoomId" class="form-select" asp-items="ViewBag.Rooms">
-                            <option value="">-- Oda Seç --</option>
-                        </select>
-                        <span asp-validation-for="RoomId" class="text-danger"></span>
-                    </div>
-
-                    <div class="mb-3">
-                        <label asp-for="GirisTarihi" class="form-label fw-bold">Giriş Tarihi</label>
-                        <input asp-for="GirisTarihi" type="date" class="form-control" />
-                        <span asp-validation-for="GirisTarihi" class="text-danger"></span>
-                    </div>
-
-                    <div class="mb-4">
-                        <label asp-for="CikisTarihi" class="form-label fw-bold">Çıkış Tarihi</label>
-                        <input asp-for="CikisTarihi" type="date" class="form-control" />
-                        <span asp-validation-for="CikisTarihi" class="text-danger"></span>
-                    </div>
-
-                    <div class="d-flex justify-content-between">
-                        <a asp-action="Index" class="btn btn-secondary">Vazgeç</a>
-                        <button type="submit" class="btn btn-success">Kaydet</button>
-                    </div>
-
-                </form>
+        <form asp-action="Create" method="post">
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <label asp-for="UserId" class="form-label fw-bold">Müşteri Seçin</label>
+                    <select asp-for="UserId" class="form-select form-select-lg">
+                        <option value="">-- Müşteri Seçiniz --</option>
+                        @if(ViewBag.Users != null)
+                        {
+                            foreach(var u in ViewBag.Users)
+                            {
+                                <option value="@u.Id">@u.Ad @u.Soyad (@u.Email)</option>
+                            }
+                        }
+                    </select>
+                    <span asp-validation-for="UserId" class="text-danger small"></span>
+                </div>
+                
+                <div class="col-md-6 mb-4">
+                    <label asp-for="RoomId" class="form-label fw-bold">Oda Seçin</label>
+                    <select asp-for="RoomId" class="form-select form-select-lg">
+                        <option value="">-- Oda Seçiniz --</option>
+                        @if(ViewBag.Rooms != null)
+                        {
+                            foreach(var r in ViewBag.Rooms)
+                            {
+                                <option value="@r.Id">Oda @r.OdaNumarasi - @r.GecelikFiyat.ToString("C")</option>
+                            }
+                        }
+                    </select>
+                    <span asp-validation-for="RoomId" class="text-danger small"></span>
+                </div>
             </div>
-        </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <label asp-for="GirisTarihi" class="form-label fw-bold">Giriş Tarihi</label>
+                    <input asp-for="GirisTarihi" type="text" class="form-control form-control-lg bg-white" placeholder="Tarih seçin..." />
+                    <span asp-validation-for="GirisTarihi" class="text-danger small"></span>
+                </div>
+                
+                <div class="col-md-6 mb-4">
+                    <label asp-for="CikisTarihi" class="form-label fw-bold">Çıkış Tarihi</label>
+                    <input asp-for="CikisTarihi" type="text" class="form-control form-control-lg bg-white" placeholder="Tarih seçin..." />
+                    <span asp-validation-for="CikisTarihi" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                <a asp-action="Index" class="btn btn-light btn-lg px-4 shadow-sm border">İptal</a>
+                <button type="submit" class="btn btn-dark btn-lg px-5 shadow-sm fw-bold"><i class="bi bi-save me-2"></i>Rezervasyonu Kaydet</button>
+            </div>
+        </form>
     </div>
 </div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://npmcdn.com/flatpickr/dist/l10n/tr.js"></script>
+
+<style>
+    /* Dolu günlerin üstü çizili ve kırmızı görünmesi için özel stil */
+    .flatpickr-day.disabled, .flatpickr-day.disabled:hover {
+        background-color: #ffe0e0 !important;
+        color: #d9534f !important;
+        text-decoration: line-through !important;
+        font-weight: bold;
+        border-color: #ffe0e0 !important;
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var tumTarihler = @Html.Raw(string.IsNullOrEmpty(ViewBag.TumDoluTarihler) ? "[]" : ViewBag.TumDoluTarihler);
+        if (!Array.isArray(tumTarihler)) { tumTarihler = []; }
+
+        var fpOptions = { 
+            locale: "tr", 
+            dateFormat: "Y-m-d", 
+            altInput: true,
+            altFormat: "d F Y",
+            minDate: "today",
+            inline: true // Takvim hep açik dursun
+        };
+        
+        var girisFp = flatpickr("#GirisTarihi", fpOptions);
+        var cikisFp = flatpickr("#CikisTarihi", fpOptions);
+
+        var roomSelect = document.getElementById("RoomId");
+        
+        function guncelleTakvim() {
+            var seciliOda = parseInt(roomSelect.value);
+            if (!seciliOda) {
+                girisFp.set("disable", []);
+                cikisFp.set("disable", []);
+                return;
+            }
+
+            var disableDates = [];
+            tumTarihler.forEach(function(item) {
+                if (item.RoomId === seciliOda && item.Giris && item.Cikis) {
+                    disableDates.push({
+                        from: item.Giris.split('T')[0],
+                        to: item.Cikis.split('T')[0]
+                    });
+                }
+            });
+
+            girisFp.set("disable", disableDates);
+            cikisFp.set("disable", disableDates);
+        }
+
+        roomSelect.addEventListener("change", guncelleTakvim);
+        guncelleTakvim();
+    });
+</script>

@@ -1,26 +1,28 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using otelrezervation.Services;
-using otelrezervation.DTOs;
+using otelrezervation.Models;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace otelrezervation.Controllers.Web;
 
-[Authorize]
+[Authorize(Roles = "Admin")]
 public class ReservationController : Controller
 {
+    private readonly AppDbContext _context;
     private readonly IReservationService _reservationService;
     private readonly IRoomService _roomService;
     private readonly IUserService _userService;
 
-    public ReservationController(IReservationService reservationService, IRoomService roomService, IUserService userService)
+    public ReservationController(AppDbContext context, IReservationService reservationService, IRoomService roomService, IUserService userService)
     {
+        _context = context;
         _reservationService = reservationService;
         _roomService = roomService;
         _userService = userService;
     }
 
-    // 1. Tüm rezervasyonları listele (Index)
     [HttpGet]
     public async Task<IActionResult> Index()
     {
@@ -28,64 +30,73 @@ public class ReservationController : Controller
         return View(reservations);
     }
 
-    // 2. Yeni rezervasyon formunu göster (Create GET)
+    // Yöneticinin manuel olarak müşteri seçip rezervasyon yapması
     [HttpGet]
-    public async Task<IActionResult> Create()
+    public async Task<IActionResult> Create(int? roomId)
     {
-        await DoldurSelectList();
-        return View();
+        ViewBag.Users = await _userService.GetAllUsersAsync();
+        ViewBag.Rooms = await _roomService.GetAllRoomsAsync();
+        
+        var dto = new otelrezervation.DTOs.CreateReservationDto();
+        if (roomId.HasValue)
+        {
+            dto.RoomId = roomId.Value;
+        }
+
+        var tumRezervasyonlar = await _context.Reservations
+            .Where(r => r.CikisTarihi >= System.DateTime.Today)
+            .Select(r => new { r.RoomId, Giris = r.GirisTarihi, Cikis = r.CikisTarihi })
+            .ToListAsync();
+        ViewBag.TumDoluTarihler = System.Text.Json.JsonSerializer.Serialize(tumRezervasyonlar);
+        
+        return View(dto);
     }
 
-    // 3. Formdan gelen rezervasyonu kaydet (Create POST)
     [HttpPost]
-    public async Task<IActionResult> Create(CreateReservationDto dto)
+    public async Task<IActionResult> Create(otelrezervation.DTOs.CreateReservationDto dto)
     {
         if (!ModelState.IsValid)
         {
-            await DoldurSelectList();
+            ViewBag.Users = await _userService.GetAllUsersAsync();
+            ViewBag.Rooms = await _roomService.GetAllRoomsAsync();
+            
+            var tumRezervasyonlar = await _context.Reservations
+                .Where(r => r.CikisTarihi >= System.DateTime.Today)
+                .Select(r => new { r.RoomId, Giris = r.GirisTarihi, Cikis = r.CikisTarihi })
+                .ToListAsync();
+            ViewBag.TumDoluTarihler = System.Text.Json.JsonSerializer.Serialize(tumRezervasyonlar);
+
             return View(dto);
         }
 
         try
         {
             await _reservationService.CreateReservationAsync(dto);
-            TempData["SuccessMessage"] = "Rezervasyon başarıyla eklendi.";
+            TempData["SuccessMessage"] = "Rezervasyon sistem tarafından başarıyla oluşturuldu.";
             return RedirectToAction("Index");
         }
-        catch (InvalidOperationException ex)
+        catch (System.InvalidOperationException ex)
         {
             ModelState.AddModelError("", ex.Message);
-            await DoldurSelectList();
+            ViewBag.Users = await _userService.GetAllUsersAsync();
+            ViewBag.Rooms = await _roomService.GetAllRoomsAsync();
+            
+            var tumRezervasyonlar = await _context.Reservations
+                .Where(r => r.CikisTarihi >= System.DateTime.Today)
+                .Select(r => new { r.RoomId, Giris = r.GirisTarihi, Cikis = r.CikisTarihi })
+                .ToListAsync();
+            ViewBag.TumDoluTarihler = System.Text.Json.JsonSerializer.Serialize(tumRezervasyonlar);
+
             return View(dto);
         }
     }
-
-    // 4. Rezervasyon Silme (Delete POST)
+    
+    // Yöneticinin rezervasyon iptal etmesi/silmesi
     [HttpPost]
     public async Task<IActionResult> Delete(int id)
     {
-        var result = await _reservationService.DeleteReservationAsync(id);
-        if (result)
-        {
-            TempData["SuccessMessage"] = "Rezervasyon iptal edildi.";
-        }
-        else
-        {
-            TempData["ErrorMessage"] = "İptal edilecek rezervasyon bulunamadı.";
-        }
+        await _reservationService.DeleteReservationAsync(id);
+        TempData["SuccessMessage"] = "Rezervasyon sistemden başarıyla silindi.";
         return RedirectToAction("Index");
-    }
-
-    // YARDIMCI METOT: Dropdownları doldurur
-    private async Task DoldurSelectList()
-    {
-        var rooms = await _roomService.GetAllRoomsAsync();
-        var users = await _userService.GetAllUsersAsync();
-
-        // İsim Soyisim birlikte göstermek için anonim obje listesi yapıyoruz
-        var userList = users.Select(u => new { Id = u.Id, FullName = u.Ad + " " + u.Soyad }).ToList();
-
-        ViewBag.Rooms = new SelectList(rooms, "Id", "OdaNumarasi");
-        ViewBag.Users = new SelectList(userList, "Id", "FullName");
     }
 }

@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using otelrezervation.Models;
 using otelrezervation.Services;
 
+using Microsoft.AspNetCore.Authentication.Cookies;
+
 // PostgreSQL'in tarih formati (UTC vs Local) hatasini onlemek icin eski tip tarih kullanimini aciyoruz
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
@@ -11,6 +13,15 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews(); 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Kimlik Dogrulama (Authentication) Servisi Ekle
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Auth/Login";
+        options.LogoutPath = "/Auth/Logout";
+        options.AccessDeniedPath = "/Auth/Login";
+    });
 
 // 2. PostgreSQL veritabani komprumuz 
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -33,7 +44,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseStaticFiles(); // HTML içinde CSS/JS dosyalarını kullanabilmek için eklendi
 
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 //  Test 

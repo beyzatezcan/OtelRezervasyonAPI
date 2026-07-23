@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using otelrezervation.Services; 
 using otelrezervation.DTOs; 
 
@@ -6,6 +7,7 @@ namespace otelrezervation.Controllers.Web;
 
 // API'deki UsersController ile karismamasi icin adini UserController yaptik.
 // Bu controller JSON degil, dogrudan HTML sayfasini (View) donecek.
+[Authorize(Roles = "Admin")]
 public class UserController : Controller
 {
     private readonly IUserService _userService;

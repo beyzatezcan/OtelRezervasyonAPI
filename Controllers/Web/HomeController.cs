@@ -1,16 +1,22 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using otelrezervation.Services;
 
 namespace otelrezervation.Controllers.Web;
 
-[Authorize] // sadece login olanlar erisebilir
+[AllowAnonymous] 
 public class HomeController : Controller
 {
-    // API'lerimizde 'IActionResult' diyorduk ve Ok(veri) dönüyorduk.
-    // MVC'de 'IActionResult' diyoruz ve View() (Görsel Sayfa) dönüyoruz.
-    public IActionResult Index()
+    private readonly IRoomService _roomService;
+
+    public HomeController(IRoomService roomService)
     {
-        // Views/Home/Index.cshtml sayfasını açar
-        return View();
+        _roomService = roomService;
+    }
+
+    public async Task<IActionResult> Index()
+    {
+        var rooms = await _roomService.GetAllRoomsAsync();
+        return View(rooms);
     }
 }
