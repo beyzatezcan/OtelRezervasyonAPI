@@ -1,48 +1,39 @@
 @model otelrezervation.DTOs.CreateUserDto
-
 @{
     ViewData["Title"] = "Yeni Müşteri Ekle";
 }
 
-<div class="container mt-4">
-    <h2>Yeni Müşteri Ekle</h2>
-    <hr />
+<div class="luxury-form-container" style="max-width: 520px;">
+    <h3>Yeni Müşteri Ekle</h3>
+    <p class="form-subtitle">Sisteme yeni bir müşteri kaydı oluşturun</p>
 
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <!-- Form POST metoduyla Controller'daki Create'e gidecek -->
-                    <form asp-action="Create" method="post">
-                        <div class="mb-3">
-                            <label asp-for="Ad" class="form-label">Ad</label>
-                            <input asp-for="Ad" class="form-control" />
-                            <span asp-validation-for="Ad" class="text-danger"></span>
-                        </div>
-
-                        <div class="mb-3">
-                            <label asp-for="Soyad" class="form-label">Soyad</label>
-                            <input asp-for="Soyad" class="form-control" />
-                            <span asp-validation-for="Soyad" class="text-danger"></span>
-                        </div>
-
-                        <div class="mb-3">
-                            <label asp-for="Email" class="form-label">E-Posta</label>
-                            <input asp-for="Email" type="email" class="form-control" />
-                            <span asp-validation-for="Email" class="text-danger"></span>
-                        </div>
-
-                        <div class="mb-3">
-                            <label asp-for="Telefon" class="form-label">Telefon Numarası</label>
-                            <input asp-for="Telefon" class="form-control" />
-                            <span asp-validation-for="Telefon" class="text-danger"></span>
-                        </div>
-
-                        <button type="submit" class="btn btn-success">Kaydet</button>
-                        <a href="/User/Index" class="btn btn-secondary">İptal (Geri Dön)</a>
-                    </form>
-                </div>
+    <form asp-action="Create" method="post" class="luxury-form">
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <label asp-for="Ad" class="form-label">Ad</label>
+                <input asp-for="Ad" class="form-control" placeholder="Adı" />
+                <span asp-validation-for="Ad" style="color: #ff6b6b; font-size: 0.8rem;"></span>
+            </div>
+            <div class="col-md-6 mb-4">
+                <label asp-for="Soyad" class="form-label">Soyad</label>
+                <input asp-for="Soyad" class="form-control" placeholder="Soyadı" />
+                <span asp-validation-for="Soyad" style="color: #ff6b6b; font-size: 0.8rem;"></span>
             </div>
         </div>
-    </div>
+
+        <div class="mb-4">
+            <label asp-for="Email" class="form-label">E-Posta</label>
+            <input asp-for="Email" type="email" class="form-control" placeholder="ornek@email.com" />
+            <span asp-validation-for="Email" style="color: #ff6b6b; font-size: 0.8rem;"></span>
+        </div>
+
+        <div class="mb-4">
+            <label asp-for="Telefon" class="form-label">Telefon Numarası</label>
+            <input asp-for="Telefon" class="form-control" placeholder="5xx xxx xx xx" />
+            <span asp-validation-for="Telefon" style="color: #ff6b6b; font-size: 0.8rem;"></span>
+        </div>
+
+        <button type="submit" class="btn-gold">Kaydet</button>
+        <a href="/User/Index" class="btn-gold-outline" style="width: 100%; text-align: center; margin-top: 10px; display: block;">İptal</a>
+    </form>
 </div>

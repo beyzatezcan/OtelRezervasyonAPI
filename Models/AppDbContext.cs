@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 namespace otelrezervation.Models;
 
@@ -10,7 +10,7 @@ public class AppDbContext : DbContext
     public DbSet<User> Users { get; set; }
     public DbSet<Room> Rooms { get; set; }
     public DbSet<Reservation> Reservations { get; set; }
-    
-    
+    public DbSet<Blog> Blogs { get; set; }
+    public DbSet<ContactMessage> ContactMessages { get; set; }
 
 }
