@@ -1,35 +1,26 @@
 @model otelrezervation.DTOs.CreateRoomDto
-
 @{
     ViewData["Title"] = "Yeni Oda Ekle";
 }
 
-<div class="container mt-4">
-    <h2>Yeni Oda Ekle</h2>
-    <hr />
+<div class="luxury-form-container">
+    <h3>Yeni Oda Ekle</h3>
+    <p class="form-subtitle">Sisteme yeni bir oda kaydı oluşturun</p>
 
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <form asp-controller="Room" asp-action="Create" method="post">
-                        <div class="mb-3">
-                            <label asp-for="OdaNumarasi" class="form-label">Oda Numarası (Örn: 101)</label>
-                            <input asp-for="OdaNumarasi" class="form-control" />
-                            <span asp-validation-for="OdaNumarasi" class="text-danger"></span>
-                        </div>
-
-                        <div class="mb-3">
-                            <label asp-for="GecelikFiyat" class="form-label">Gecelik Fiyat (₺)</label>
-                            <input asp-for="GecelikFiyat" type="number" step="0.01" class="form-control" />
-                            <span asp-validation-for="GecelikFiyat" class="text-danger"></span>
-                        </div>
-
-                        <button type="submit" class="btn btn-success">Kaydet</button>
-                        <a asp-controller="Room" asp-action="Index" class="btn btn-secondary">İptal</a>
-                    </form>
-                </div>
-            </div>
+    <form asp-controller="Room" asp-action="Create" method="post" class="luxury-form">
+        <div class="mb-4">
+            <label asp-for="OdaNumarasi" class="form-label">Oda Numarası</label>
+            <input asp-for="OdaNumarasi" class="form-control" placeholder="Örn: 101" />
+            <span asp-validation-for="OdaNumarasi" style="color: #ff6b6b; font-size: 0.8rem;"></span>
         </div>
-    </div>
+
+        <div class="mb-4">
+            <label asp-for="GecelikFiyat" class="form-label">Gecelik Fiyat (₺)</label>
+            <input asp-for="GecelikFiyat" type="number" step="0.01" class="form-control" placeholder="Örn: 2500" />
+            <span asp-validation-for="GecelikFiyat" style="color: #ff6b6b; font-size: 0.8rem;"></span>
+        </div>
+
+        <button type="submit" class="btn-gold">Kaydet</button>
+        <a asp-controller="Room" asp-action="Index" class="btn-gold-outline" style="width: 100%; text-align: center; margin-top: 10px; display: block;">İptal</a>
+    </form>
 </div>

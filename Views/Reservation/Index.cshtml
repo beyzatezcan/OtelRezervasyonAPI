@@ -1,62 +1,70 @@
 @model IEnumerable<otelrezervation.DTOs.ReservationDto>
 @{
-    ViewData["Title"] = "Tüm Rezervasyonlar (Yönetici Paneli)";
+    ViewData["Title"] = "Tüm Rezervasyonlar";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="fw-bold text-dark"><i class="bi bi-journal-bookmark-fill text-primary me-2"></i>Tüm Rezervasyonlar</h2>
-    <a asp-action="Create" class="btn btn-dark shadow-sm"><i class="bi bi-plus-circle me-2"></i>Manuel Rezervasyon Ekle</a>
-</div>
-
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success shadow-sm">
-        <i class="bi bi-check-circle-fill me-2"></i> @TempData["SuccessMessage"]
+<div class="admin-panel">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="bi bi-journal-bookmark me-2" style="color: var(--gold);"></i>Tüm Rezervasyonlar</h2>
+        <a asp-action="Create" class="btn-gold">
+            <i class="bi bi-plus-circle me-1"></i> Manuel Rezervasyon
+        </a>
     </div>
-}
 
-<div class="card shadow-sm border-0 rounded-4">
-    <div class="card-body p-0">
-        @if (Model != null && Model.Any())
-        {
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                    <thead class="table-light">
-                        <tr>
-                            <th class="ps-4">ID</th>
-                            <th>Oda No</th>
-                            <th>Müşteri Adı</th>
-                            <th>Giriş Tarihi</th>
-                            <th>Çıkış Tarihi</th>
-                            <th class="text-end pe-4">İşlemler</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var res in Model)
-                        {
-                            <tr>
-                                <td class="ps-4 text-muted fw-bold">#@res.Id</td>
-                                <td class="fw-bold text-primary">@res.OdaNumarasi</td>
-                                <td>@res.MusteriAdi</td>
-                                <td><span class="badge bg-success">@res.GirisTarihi.ToString("dd.MM.yyyy")</span></td>
-                                <td><span class="badge bg-danger">@res.CikisTarihi.ToString("dd.MM.yyyy")</span></td>
-                                <td class="text-end pe-4">
-                                    <form asp-action="Delete" asp-route-id="@res.Id" method="post" class="d-inline" onsubmit="return confirm('Bu rezervasyonu sistemden tamamen silmek istediğinize emin misiniz? (Müşteri de göremeyecek!)');">
-                                        <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash-fill"></i> Sil</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        }
-        else
-        {
-            <div class="p-5 text-center text-muted">
-                <i class="bi bi-inbox-fill display-4 mb-3 d-block"></i>
-                <h5>Sistemde kayıtlı hiçbir rezervasyon bulunmuyor.</h5>
-            </div>
-        }
-    </div>
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert-luxury">
+            <i class="bi bi-check-circle-fill me-2"></i> @TempData["SuccessMessage"]
+        </div>
+    }
+
+    @if (Model != null && Model.Any())
+    {
+        <table class="luxury-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Oda No</th>
+                    <th>Müşteri</th>
+                    <th>Giriş Tarihi</th>
+                    <th>Çıkış Tarihi</th>
+                    <th style="text-align: right;">İşlemler</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var res in Model)
+                {
+                    <tr>
+                        <td style="color: var(--text-light);">#@res.Id</td>
+                        <td style="color: var(--gold); font-weight: 600;">@res.OdaNumarasi</td>
+                        <td>@res.MusteriAdi</td>
+                        <td>
+                            <span style="background: rgba(76, 175, 80, 0.15); color: #66bb6a; padding: 4px 12px; font-size: 0.8rem; font-weight: 600;">
+                                @res.GirisTarihi.ToString("dd.MM.yyyy")
+                            </span>
+                        </td>
+                        <td>
+                            <span style="background: rgba(220, 53, 69, 0.15); color: #ff6b6b; padding: 4px 12px; font-size: 0.8rem; font-weight: 600;">
+                                @res.CikisTarihi.ToString("dd.MM.yyyy")
+                            </span>
+                        </td>
+                        <td style="text-align: right;">
+                            <form asp-action="Delete" asp-route-id="@res.Id" method="post" class="d-inline" onsubmit="return confirm('Bu rezervasyonu silmek istediğinize emin misiniz?');">
+                                <button type="submit" style="background: transparent; border: 1px solid #ff6b6b; color: #ff6b6b; padding: 6px 16px; font-size: 0.7rem; letter-spacing: 1px; text-transform: uppercase; font-family: var(--font-body); cursor: pointer; font-weight: 600;">
+                                    <i class="bi bi-trash"></i> Sil
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div style="text-align: center; padding: 60px 0; color: var(--text-light);">
+            <i class="bi bi-inbox" style="font-size: 3rem; color: var(--gold); opacity: 0.4;"></i>
+            <p class="mt-3">Sistemde kayıtlı hiçbir rezervasyon bulunmuyor.</p>
+        </div>
+    }
 </div>

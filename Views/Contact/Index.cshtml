@@ -1,0 +1,109 @@
+@model otelrezervation.Models.ContactMessage
+@{
+    ViewData["Title"] = "İletişim";
+}
+
+<!-- HERO SECTION -->
+<section class="hero-section" style="background-image: linear-gradient(rgba(10, 10, 10, 0.7), rgba(10, 10, 10, 0.7)), url('/images/room-suite.png'); height: 60vh;">
+    <div class="hero-content" style="padding-top: 15vh;">
+        <p class="hero-subtitle">Bize Ulaşın</p>
+        <h1 style="font-size: 3rem;">Lumina İletişim</h1>
+        <div class="divider mx-auto mt-4"></div>
+    </div>
+</section>
+
+<!-- CONTACT SECTION -->
+<section class="section" style="background: var(--dark);">
+    <div class="container">
+        <div class="row align-items-center">
+            
+            <!-- CONTACT INFO -->
+            <div class="col-lg-5 mb-5 mb-lg-0">
+                <div style="padding-right: 50px;">
+                    <span class="overline">İletişim Bilgileri</span>
+                    <h2 style="color: var(--white); font-family: var(--font-heading); font-size: 2.5rem; margin-bottom: 30px;">
+                        Sorularınız için<br/>buradayız
+                    </h2>
+                    <p style="color: var(--text-light); margin-bottom: 40px; font-size: 1.1rem;">
+                        Unutulmaz tatilinizle ilgili her türlü soru, görüş ve öneriniz için bizimle iletişime geçebilirsiniz. Müşteri temsilcilerimiz en kısa sürede size geri dönüş yapacaktır.
+                    </p>
+                    
+                    <div class="d-flex align-items-start mb-4">
+                        <div style="width: 50px; height: 50px; background: rgba(194, 166, 118, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 20px;">
+                            <i class="bi bi-geo-alt" style="color: var(--gold); font-size: 1.3rem;"></i>
+                        </div>
+                        <div>
+                            <h5 style="color: var(--white); margin-bottom: 5px;">Adres</h5>
+                            <p style="color: var(--text-light); margin: 0;">Lumina Koyu, Akdeniz Blv. No: 1<br/>Antalya, Türkiye</p>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex align-items-start mb-4">
+                        <div style="width: 50px; height: 50px; background: rgba(194, 166, 118, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 20px;">
+                            <i class="bi bi-telephone" style="color: var(--gold); font-size: 1.3rem;"></i>
+                        </div>
+                        <div>
+                            <h5 style="color: var(--white); margin-bottom: 5px;">Telefon</h5>
+                            <p style="color: var(--text-light); margin: 0;">+90 (242) 555 00 00</p>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex align-items-start">
+                        <div style="width: 50px; height: 50px; background: rgba(194, 166, 118, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 20px;">
+                            <i class="bi bi-envelope" style="color: var(--gold); font-size: 1.3rem;"></i>
+                        </div>
+                        <div>
+                            <h5 style="color: var(--white); margin-bottom: 5px;">E-Posta</h5>
+                            <p style="color: var(--text-light); margin: 0;">info@luminaresort.com</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- CONTACT FORM -->
+            <div class="col-lg-7">
+                <div class="luxury-form-container" style="background: var(--dark-card); border: 1px solid rgba(194,166,118,0.2); max-width: 100%; box-shadow: 0 20px 40px rgba(0,0,0,0.4);">
+                    <h3 style="margin-bottom: 5px;">Mesaj Gönder</h3>
+                    <p class="form-subtitle">Tüm alanları doldurarak bize ulaşın</p>
+                    
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert-luxury mb-4">
+                            <i class="bi bi-check-circle-fill me-2"></i> @TempData["SuccessMessage"]
+                        </div>
+                    }
+                    @if (TempData["ErrorMessage"] != null)
+                    {
+                        <div class="alert-luxury-danger mb-4">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i> @TempData["ErrorMessage"]
+                        </div>
+                    }
+                    
+                    <form asp-controller="Contact" asp-action="Send" method="post" class="luxury-form">
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <label asp-for="AdSoyad" class="form-label">Adınız Soyadınız</label>
+                                <input asp-for="AdSoyad" class="form-control" placeholder="Ad Soyad" />
+                                <span asp-validation-for="AdSoyad" style="color: #ff6b6b; font-size: 0.8rem;"></span>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <label asp-for="Email" class="form-label">E-Posta Adresiniz</label>
+                                <input asp-for="Email" class="form-control" placeholder="ornek@email.com" />
+                                <span asp-validation-for="Email" style="color: #ff6b6b; font-size: 0.8rem;"></span>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label asp-for="Mesaj" class="form-label">Mesajınız</label>
+                            <textarea asp-for="Mesaj" class="form-control" rows="5" placeholder="Bize nasıl yardımcı olabiliriz?"></textarea>
+                            <span asp-validation-for="Mesaj" style="color: #ff6b6b; font-size: 0.8rem;"></span>
+                        </div>
+                        <button type="submit" class="btn-gold" style="width: 100%;">
+                            <i class="bi bi-send me-2"></i> Mesajı Gönder
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</section>

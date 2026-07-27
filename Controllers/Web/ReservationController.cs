@@ -7,13 +7,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace otelrezervation.Controllers.Web;
 
-[Authorize(Roles = "Admin")]
+[Authorize(Roles = "Admin, Receptionist")] // Admin ve Resepsiyonist erisebilir
 public class ReservationController : Controller
 {
-    private readonly AppDbContext _context;
-    private readonly IReservationService _reservationService;
-    private readonly IRoomService _roomService;
-    private readonly IUserService _userService;
+    private readonly AppDbContext _context; // appdbcontext sinifini kullanarak veritabani islemleri yapiyoruz
+    private readonly IReservationService _reservationService; // IReservationService arayuzunu kullanarak rezervasyon islemleri yapiyoruz
+    private readonly IRoomService _roomService; // IRoomService arayuzunu kullanarak oda islemleri yapiyoruz
+    private readonly IUserService _userService; // IUserService arayuzunu kullanarak kullanici islemleri yapiyoruz
 
     public ReservationController(AppDbContext context, IReservationService reservationService, IRoomService roomService, IUserService userService)
     {
@@ -23,6 +23,7 @@ public class ReservationController : Controller
         _userService = userService;
     }
 
+// tum rezervasyonlarin listelendigi kontrol
     [HttpGet]
     public async Task<IActionResult> Index()
     {
@@ -52,6 +53,7 @@ public class ReservationController : Controller
         return View(dto);
     }
 
+    // yonetici tarafindan manuel rezervasyon olusturma
     [HttpPost]
     public async Task<IActionResult> Create(otelrezervation.DTOs.CreateReservationDto dto)
     {
@@ -93,6 +95,7 @@ public class ReservationController : Controller
     
     // Yöneticinin rezervasyon iptal etmesi/silmesi
     [HttpPost]
+    [Authorize(Roles = "Admin")] // Sadece Admin silebilir, Resepsiyonist silemez!
     public async Task<IActionResult> Delete(int id)
     {
         await _reservationService.DeleteReservationAsync(id);
