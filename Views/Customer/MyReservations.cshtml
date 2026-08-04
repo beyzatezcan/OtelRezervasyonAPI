@@ -1,70 +1,104 @@
 @model IEnumerable<otelrezervation.Models.Reservation>
 @{
-    ViewData["Title"] = "Benim Rezervasyonlarım";
+    ViewData["Title"] = "Rezervasyonlarım";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="text-primary fw-bold">Benim Rezervasyonlarım</h2>
-    <a asp-controller="Home" asp-action="Index" class="btn btn-outline-primary shadow-sm"><i class="bi bi-door-open me-2"></i>Yeni Oda Bul</a>
-</div>
-
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success shadow-sm">
-        <i class="bi bi-check-circle-fill me-2"></i> @TempData["SuccessMessage"]
+<div class="admin-panel">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="bi bi-calendar-heart me-2" style="color: var(--gold);"></i>Rezervasyonlarım</h2>
+        <a href="/Home/Konaklama" class="btn-gold">
+            <i class="bi bi-door-open me-1"></i> Yeni Oda Bul
+        </a>
     </div>
-}
 
-@if (TempData["ErrorMessage"] != null)
-{
-    <div class="alert alert-danger shadow-sm">
-        <i class="bi bi-exclamation-triangle-fill me-2"></i> @TempData["ErrorMessage"]
-    </div>
-}
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert-luxury">
+            <i class="bi bi-check-circle-fill me-2"></i> @TempData["SuccessMessage"]
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert-luxury-danger">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i> @TempData["ErrorMessage"]
+        </div>
+    }
 
-<div class="card border-0 shadow-sm rounded-4">
-    <div class="card-body p-0">
-        @if (Model != null && Model.Any())
-        {
-            <div class="table-responsive">
-                <table class="table table-hover mb-0 align-middle">
-                    <thead class="table-light">
-                        <tr>
-                            <th class="ps-4">Oda No</th>
-                            <th>Tarih Aralığı</th>
-                            <th>Fiyat (Gece)</th>
-                            <th class="text-end pe-4">İşlemler</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var res in Model)
-                        {
-                            <tr>
-                                <td class="ps-4 fw-bold">@(res.Room != null ? res.Room.OdaNumarasi : "-")</td>
-                                <td>
-                                    <span class="badge bg-primary text-white">@res.GirisTarihi.ToString("dd.MM.yyyy")</span>
-                                    <i class="bi bi-arrow-right mx-1 text-muted"></i>
-                                    <span class="badge bg-danger text-white">@res.CikisTarihi.ToString("dd.MM.yyyy")</span>
-                                </td>
-                                <td class="text-success fw-bold">@(res.Room != null ? res.Room.GecelikFiyat.ToString("C") : "-")</td>
-                                <td class="text-end pe-4">
-                                    <form asp-action="CancelReservation" asp-route-id="@res.Id" method="post" class="d-inline" onsubmit="return confirm('Bu rezervasyonunuzu iptal etmek istediğinize emin misiniz?');">
-                                        <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-x-circle me-1"></i>İptal Et</button>
+    @if (Model != null && Model.Any())
+    {
+        <table class="luxury-table">
+            <thead>
+                <tr>
+                    <th>Oda No</th>
+                    <th>Tarih Aralığı</th>
+                    <th>Durum</th>
+                    <th>Gecelik Fiyat</th>
+                    <th style="text-align: right;">İşlemler</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var res in Model)
+                {
+                    <tr>
+                        <td style="color: var(--gold); font-weight: 600;">@(res.Room != null ? res.Room.OdaNumarasi : "-")</td>
+                        <td>
+                            <span style="background: rgba(76, 175, 80, 0.15); color: #66bb6a; padding: 4px 12px; font-size: 0.8rem; font-weight: 600;">
+                                @res.GirisTarihi.ToString("dd.MM.yyyy")
+                            </span>
+                            <i class="bi bi-arrow-right mx-2" style="color: var(--text-light);"></i>
+                            <span style="background: rgba(220, 53, 69, 0.15); color: #ff6b6b; padding: 4px 12px; font-size: 0.8rem; font-weight: 600;">
+                                @res.CikisTarihi.ToString("dd.MM.yyyy")
+                            </span>
+                        </td>
+                        <td>
+                            @if (res.Status == otelrezervation.Models.ReservationStatus.Pending)
+                            {
+                                <span class="badge bg-warning text-dark">Bekliyor</span>
+                            }
+                            else if (res.Status == otelrezervation.Models.ReservationStatus.CheckedIn)
+                            {
+                                <span class="badge bg-primary">Konaklıyor</span>
+                            }
+                            else if (res.Status == otelrezervation.Models.ReservationStatus.CheckedOut)
+                            {
+                                <span class="badge bg-success">Tamamlandı</span>
+                            }
+                            else if (res.Status == otelrezervation.Models.ReservationStatus.Cancelled)
+                            {
+                                <span class="badge bg-danger">İptal Edildi</span>
+                            }
+                        </td>
+                        <td style="color: var(--gold);">@(res.Room != null ? res.Room.GecelikFiyat.ToString("N0") + " ₺" : "-")</td>
+                        <td style="text-align: right;">
+                            <div class="d-flex justify-content-end gap-2">
+                                @if (res.Status == otelrezervation.Models.ReservationStatus.Pending && (res.GirisTarihi - DateTime.Now).TotalHours >= 48)
+                                {
+                                    <form asp-action="CancelReservation" asp-route-id="@res.Id" method="post" onsubmit="return confirm('Bu rezervasyonunuzu iptal etmek istediğinize emin misiniz?');">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" style="font-size: 0.75rem;">
+                                            <i class="bi bi-x-circle me-1"></i> İptal Et
+                                        </button>
                                     </form>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        }
-        else
-        {
-            <div class="p-5 text-center text-muted">
-                <i class="bi bi-calendar-x display-4 mb-3 d-block"></i>
-                <h5>Henüz bir rezervasyonunuz bulunmuyor.</h5>
-                <p>Otelimizin harika odalarını keşfetmek için hemen ana sayfaya dönün!</p>
-            </div>
-        }
-    </div>
+                                }
+                                
+                                @if (res.CikisTarihi < DateTime.Now && (res.Status == otelrezervation.Models.ReservationStatus.CheckedOut || res.Status == otelrezervation.Models.ReservationStatus.CheckedIn))
+                                {
+                                    <a asp-action="AddReview" asp-route-roomId="@res.RoomId" asp-route-reservationId="@res.Id" class="btn btn-sm btn-outline-warning" style="font-size: 0.75rem;">
+                                        <i class="bi bi-star-fill me-1"></i> Değerlendir
+                                    </a>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div style="text-align: center; padding: 60px 0; color: var(--text-light);">
+            <i class="bi bi-calendar-x" style="font-size: 3rem; color: var(--gold); opacity: 0.4;"></i>
+            <h5 class="mt-3" style="color: var(--white);">Henüz bir rezervasyonunuz bulunmuyor.</h5>
+            <p>Otelimizin harika odalarını keşfetmek için hemen ana sayfaya dönün!</p>
+        </div>
+    }
 </div>

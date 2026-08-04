@@ -1,103 +1,81 @@
 @model otelrezervation.DTOs.CreateReservationDto
 @{
-    ViewData["Title"] = "Oda Ayırt";
+    ViewData["Title"] = "Rezervasyon Yap";
 }
 
-<div class="row justify-content-center">
-    <div class="col-md-8">
-        <div class="card shadow-sm border-0 rounded-4 mt-4">
-            <div class="card-header bg-primary text-white p-4 rounded-top-4">
-                <h3 class="mb-0 fw-bold"><i class="bi bi-calendar-check me-2"></i> Rezervasyon Yap</h3>
-            </div>
-            <div class="card-body p-4">
-                
-                <div class="alert alert-info d-flex align-items-center mb-4">
-                    <i class="bi bi-info-circle-fill fs-3 me-3"></i>
-                    <div>
-                        Seçtiğiniz Oda: <strong>@ViewBag.OdaNumarasi</strong> <br/>
-                        Gecelik Fiyat: <strong class="text-success">@ViewBag.GecelikFiyat.ToString("C")</strong>
-                    </div>
-                </div>
+<div class="luxury-form-container" style="max-width: 640px;">
+    <h3>Rezervasyon Yap</h3>
+    <p class="form-subtitle">Seçtiğiniz oda için tarihleri belirleyin</p>
 
-                @if (!ViewData.ModelState.IsValid)
-                {
-                    <div class="alert alert-danger p-3">
-                        <div asp-validation-summary="All" class="text-danger mb-0"></div>
-                    </div>
-                }
-
-                <form asp-action="BookRoom" method="post">
-                    <!-- Gizli Alanlar -->
-                    <input type="hidden" asp-for="RoomId" />
-                    <input type="hidden" asp-for="UserId" />
-                    
-                    <div class="row">
-                        <div class="col-md-6 mb-4">
-                            <label asp-for="GirisTarihi" class="form-label fw-bold">Giriş Tarihi</label>
-                            <input asp-for="GirisTarihi" type="text" class="form-control form-control-lg bg-white" placeholder="Tarih seçin..." />
-                            <span asp-validation-for="GirisTarihi" class="text-danger small"></span>
-                        </div>
-                        
-                        <div class="col-md-6 mb-4">
-                            <label asp-for="CikisTarihi" class="form-label fw-bold">Çıkış Tarihi</label>
-                            <input asp-for="CikisTarihi" type="text" class="form-control form-control-lg bg-white" placeholder="Tarih seçin..." />
-                            <span asp-validation-for="CikisTarihi" class="text-danger small"></span>
-                        </div>
-                    </div>
-
-                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
-                        <a asp-controller="Home" asp-action="Index" class="btn btn-light btn-lg px-4 shadow-sm border">İptal</a>
-                        <button type="submit" class="btn btn-success btn-lg px-5 shadow-sm fw-bold"><i class="bi bi-check2-circle me-2"></i>Rezervasyonu Onayla</button>
-                    </div>
-                </form>
-            </div>
+    <div class="alert-luxury" style="display: flex; align-items: center; gap: 16px;">
+        <i class="bi bi-door-open" style="font-size: 1.5rem;"></i>
+        <div>
+            <div>Oda: <strong style="color: var(--white);">@ViewBag.OdaNumarasi</strong></div>
+            <div>Gecelik: <strong style="color: var(--gold);">@ViewBag.GecelikFiyat.ToString("N0") ₺</strong></div>
         </div>
     </div>
+
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert-luxury-danger">
+            <div asp-validation-summary="All"></div>
+        </div>
+    }
+
+    <form asp-action="BookRoom" method="post" class="luxury-form">
+        <input type="hidden" asp-for="RoomId" />
+        <input type="hidden" asp-for="UserId" />
+
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <label asp-for="GirisTarihi" class="form-label">Giriş Tarihi</label>
+                <input asp-for="GirisTarihi" type="text" class="form-control" placeholder="Tarih seçin..." />
+            </div>
+            <div class="col-md-6 mb-4">
+                <label asp-for="CikisTarihi" class="form-label">Çıkış Tarihi</label>
+                <input asp-for="CikisTarihi" type="text" class="form-control" placeholder="Tarih seçin..." />
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <label asp-for="OzelIstekler" class="form-label">Özel İstekleriniz (İsteğe Bağlı)</label>
+            <textarea asp-for="OzelIstekler" class="form-control" rows="3" placeholder="Örn: Havalimanı transferi, Bebek yatağı..."></textarea>
+            <small style="color: var(--text-light); font-size: 0.8rem;">Otelimize bildirmek istediğiniz özel bir notunuz varsa buraya yazabilirsiniz.</small>
+        </div>
+
+        <button type="submit" class="btn-gold"><i class="bi bi-check2-circle me-2"></i>Rezervasyonu Onayla</button>
+        <a asp-controller="Home" asp-action="Konaklama" class="btn-gold-outline" style="width: 100%; text-align: center; margin-top: 10px; display: block;">İptal</a>
+    </form>
 </div>
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-<script src="https://npmcdn.com/flatpickr/dist/l10n/tr.js"></script>
+@section Scripts {
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://npmcdn.com/flatpickr/dist/l10n/tr.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var tarihler = @Html.Raw(string.IsNullOrEmpty(ViewBag.DoluTarihler) ? "[]" : ViewBag.DoluTarihler);
+            var disableDates = [];
 
-<style>
-    /* Dolu günlerin üstü çizili ve kırmızı görünmesi için özel stil (Booking.com benzeri) */
-    .flatpickr-day.disabled, .flatpickr-day.disabled:hover {
-        background-color: #ffe0e0 !important;
-        color: #d9534f !important;
-        text-decoration: line-through !important;
-        font-weight: bold;
-        border-color: #ffe0e0 !important;
-    }
-</style>
+            if (Array.isArray(tarihler)) {
+                tarihler.forEach(function(item) {
+                    if(item && item.Giris && item.Cikis) {
+                        disableDates.push({ from: item.Giris.split('T')[0], to: item.Cikis.split('T')[0] });
+                    }
+                });
+            }
 
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        // MVC'den gelen JSON stringini dogrudan javascript objesi olarak render ediyoruz.
-        var tarihler = @Html.Raw(string.IsNullOrEmpty(ViewBag.DoluTarihler) ? "[]" : ViewBag.DoluTarihler);
-        var disableDates = [];
-        
-        if (Array.isArray(tarihler)) {
-            tarihler.forEach(function(item) {
-                if(item && item.Giris && item.Cikis) {
-                    disableDates.push({
-                        from: item.Giris.split('T')[0],
-                        to: item.Cikis.split('T')[0]
-                    });
-                }
-            });
-        }
+            var fpOptions = {
+                locale: "tr",
+                dateFormat: "Y-m-d",
+                altInput: true,
+                altFormat: "d F Y",
+                minDate: "today",
+                disable: disableDates
+            };
 
-        var fpOptions = {
-            locale: "tr",
-            dateFormat: "Y-m-d", // Form submit degeri
-            altInput: true,      // Kullaniciya ozel format
-            altFormat: "d F Y",  // ornegin 25 Temmuz 2026
-            minDate: "today",
-            disable: disableDates,
-            inline: true // Takvimin popup degil, sayfada sabit CIZELGE seklinde acik kalmasi
-        };
-
-        flatpickr("#GirisTarihi", fpOptions);
-        flatpickr("#CikisTarihi", fpOptions);
-    });
-</script>
+            flatpickr("#GirisTarihi", fpOptions);
+            flatpickr("#CikisTarihi", fpOptions);
+        });
+    </script>
+}

@@ -12,4 +12,7 @@ public interface IReservationService
 
     // rezervsyon iptal et (sil) 
     Task<bool> DeleteReservationAsync(int id);
+
+    // Dashboard İstatistikleri icin
+    Task<int> GetTotalReservationCountAsync();
 }

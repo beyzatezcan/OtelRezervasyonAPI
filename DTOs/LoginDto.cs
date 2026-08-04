@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace otelrezervation.DTOs;
 
+ 
 public class LoginDto
 {
     [Required(ErrorMessage = "Email adresi zorunludur.")]

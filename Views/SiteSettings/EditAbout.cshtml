@@ -1,0 +1,240 @@
+@model List<otelrezervation.Models.SiteSetting>
+
+@{
+    ViewData["Title"] = "Hakkımızda (Düzenleme Modu)";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    
+    // Helper to get value
+    string GetVal(string key, string defaultVal) {
+        var setting = Model.FirstOrDefault(s => s.Key == key);
+        return setting?.Value ?? defaultVal;
+    }
+}
+
+<!-- Frontend CSS for accurate preview -->
+<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+<div class="d-flex justify-content-between align-items-center mb-4 mt-3">
+    <h4><i class="bi bi-brush text-success"></i> Hakkımızda Sayfası (Görsel Düzenleyici)</h4>
+    <div>
+        <button class="btn btn-primary" onclick="saveAllChanges()"><i class="bi bi-save"></i> Tüm Değişiklikleri Kaydet</button>
+        <a href="/SiteSettings/PageManager" class="btn btn-secondary">İptal</a>
+    </div>
+</div>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+<div class="visual-editor-container border rounded bg-white shadow-sm" style="overflow: hidden;">
+    
+    <!-- HERO SECTION PREVIEW & EDIT -->
+    <div class="position-relative">
+        <!-- Edit Image Button Overlay -->
+        <div class="position-absolute top-0 end-0 m-3 z-3">
+            <button class="btn btn-dark btn-sm shadow" data-bs-toggle="modal" data-bs-target="#imageModal_HeroImage">
+                <i class="bi bi-image"></i> Arka Planı Değiştir
+            </button>
+        </div>
+
+        <div class="luxury-hero" style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), url('@GetVal("HeroImage", "/images/hotel-hero.jpg")'); min-height: 55vh; display: flex; align-items: center; justify-content: center; text-align: center; padding-top: 80px;">
+            <div class="container">
+                <span class="editable-inline" data-key="HeroSubtitle" style="color: var(--gold); font-size: 1rem; letter-spacing: 3px; text-transform: uppercase;">@Html.Raw(GetVal("HeroSubtitle", "Biz Kimiz?"))</span>
+                <h1 class="mt-2 editable-inline" data-key="HeroTitle" style="color: var(--white); font-family: 'Playfair Display', serif; font-size: 3.5rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">@Html.Raw(GetVal("HeroTitle", "Lumina Luxury Resort"))</h1>
+                <div class="divider mx-auto mt-4"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- İÇERİK BÖLÜMÜ PREVIEW & EDIT -->
+    <div class="container my-5 py-4">
+        <div class="row align-items-center mb-5 pb-4">
+            <div class="col-lg-6 mb-4 mb-lg-0 position-relative">
+                 <!-- Edit Image Button Overlay -->
+                <div class="position-absolute top-0 start-0 m-3 z-3">
+                    <button class="btn btn-dark btn-sm shadow" data-bs-toggle="modal" data-bs-target="#imageModal_SideImage">
+                        <i class="bi bi-image"></i> Resmi Değiştir
+                    </button>
+                </div>
+                <img src="@GetVal("SideImage", "/images/room-suite.png")" alt="Otelimiz" class="img-fluid rounded shadow-lg" style="border: 2px solid rgba(194,166,118,0.3);">
+            </div>
+            <div class="col-lg-6 ps-lg-5">
+                <h3 class="editable-inline" data-key="ContentTitle" style="color: var(--gold); font-family: 'Playfair Display', serif; font-size: 2.2rem; margin-bottom: 20px;">@Html.Raw(GetVal("ContentTitle", "Lüksün ve Huzurun Buluşma Noktası"))</h3>
+                
+                <div class="editable-block" data-key="ContentText" style="color: var(--text-body); font-size: 1.1rem; line-height: 1.8;">
+                    @Html.Raw(GetVal("ContentText", "<p>2010 yılından bu yana, misafirlerimize unutulmaz anılar biriktirecekleri kusursuz bir tatil deneyimi sunuyoruz...</p>"))
+                </div>
+            </div>
+        </div>
+
+        <!-- MİSYON VİZYON PREVIEW & EDIT -->
+        <div class="row g-4 mt-2">
+            <div class="col-md-6">
+                <div class="p-4 h-100" style="background: var(--dark-soft); border-left: 4px solid var(--gold); border-radius: 4px;">
+                    <h4 class="editable-inline" data-key="MissionTitle" style="color: var(--white); font-family: 'Playfair Display', serif; margin-bottom: 15px;">@Html.Raw(GetVal("MissionTitle", "Misyonumuz"))</h4>
+                    <div class="editable-block" data-key="MissionText" style="color: var(--text-light); line-height: 1.7; margin: 0;">
+                        @Html.Raw(GetVal("MissionText", "<p>Misafirlerimizin beklentilerini en üst düzeyde karşılamak...</p>"))
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="p-4 h-100" style="background: var(--dark-soft); border-left: 4px solid var(--gold); border-radius: 4px;">
+                    <h4 class="editable-inline" data-key="VisionTitle" style="color: var(--white); font-family: 'Playfair Display', serif; margin-bottom: 15px;">@Html.Raw(GetVal("VisionTitle", "Vizyonumuz"))</h4>
+                    <div class="editable-block" data-key="VisionText" style="color: var(--text-light); line-height: 1.7; margin: 0;">
+                        @Html.Raw(GetVal("VisionText", "<p>Lüks konaklama sektöründe yenilikçi yaklaşımları takip eden...</p>"))
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- IMAGE UPLOAD MODALS -->
+<!-- Modal for HeroImage -->
+<div class="modal fade" id="imageModal_HeroImage" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Arka Plan (Hero) Resmini Değiştir</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form asp-action="UpdateImage" method="post" enctype="multipart/form-data">
+          <div class="modal-body">
+              <input type="hidden" name="key" value="HeroImage" />
+              <input type="hidden" name="pageName" value="About" />
+              <input type="file" name="imageFile" class="form-control" accept="image/*" required />
+          </div>
+          <div class="modal-footer">
+              <button type="submit" class="btn btn-primary">Yükle ve Değiştir</button>
+          </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal for SideImage -->
+<div class="modal fade" id="imageModal_SideImage" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">İçerik Yan Resmini Değiştir</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form asp-action="UpdateImage" method="post" enctype="multipart/form-data">
+          <div class="modal-body">
+              <input type="hidden" name="key" value="SideImage" />
+              <input type="hidden" name="pageName" value="About" />
+              <input type="file" name="imageFile" class="form-control" accept="image/*" required />
+          </div>
+          <div class="modal-footer">
+              <button type="submit" class="btn btn-primary">Yükle ve Değiştir</button>
+          </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- HIDDEN FORM FOR SAVING ALL TEXT CHANGES AT ONCE -->
+<form id="saveAllForm" asp-action="UpdateText" method="post" style="display:none;">
+    <!-- We will dynamically create inputs here via JS when Save is clicked -->
+    <input type="hidden" name="pageName" value="About" />
+</form>
+
+@section Scripts {
+    <!-- CKEditor 5 CDN (Open Source, No API Key needed) -->
+    <script src="https://cdn.ckeditor.com/ckeditor5/40.0.0/inline/ckeditor.js"></script>
+
+    <style>
+        /* Highlight editable areas on hover */
+        .editable-inline, .editable-block {
+            border: 1px dashed transparent;
+            transition: all 0.3s;
+            position: relative;
+        }
+        .editable-inline:hover, .editable-block:hover {
+            border-color: #28a745;
+            background-color: rgba(40, 167, 69, 0.05);
+            cursor: pointer;
+        }
+        .editable-inline::after, .editable-block::after {
+            content: "\F4CB"; /* bi-pencil */
+            font-family: bootstrap-icons;
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            background: #28a745;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .editable-inline:hover::after, .editable-block:hover::after {
+            opacity: 1;
+        }
+        
+        .ck-editor__editable_inline {
+            border: 1px solid #28a745 !important;
+            background-color: white !important;
+            color: black !important;
+        }
+    </style>
+
+    <script>
+        // Array to store editor instances
+        const editors = {};
+
+        // Initialize CKEditor on all editable elements
+        document.querySelectorAll('.editable-inline, .editable-block').forEach(element => {
+            InlineEditor
+                .create(element, {
+                    toolbar: ['bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote']
+                })
+                .then(editor => {
+                    editors[element.getAttribute('data-key')] = editor;
+                })
+                .catch(error => {
+                    console.error('CKEditor Init Error:', error);
+                });
+        });
+
+        // Save all changes function
+        function saveAllChanges() {
+            // We need a way to send multiple key-values.
+            // Our current UpdateText controller method takes a single key/value.
+            // Let's loop and send them one by one sequentially via fetch, or 
+            // since we are just doing a quick implementation, we can submit them iteratively.
+            
+            let promises = [];
+            
+            Object.keys(editors).forEach(key => {
+                let value = editors[key].getData();
+                
+                let formData = new FormData();
+                formData.append('key', key);
+                formData.append('value', value);
+                formData.append('pageName', 'About');
+                
+                let p = fetch('/SiteSettings/UpdateText', {
+                    method: 'POST',
+                    body: formData
+                });
+                promises.push(p);
+            });
+            
+            Promise.all(promises).then(() => {
+                alert("Tüm değişiklikler başarıyla kaydedildi!");
+                window.location.reload();
+            }).catch(err => {
+                alert("Kaydetme sırasında bir hata oluştu.");
+                console.error(err);
+            });
+        }
+    </script>
+}

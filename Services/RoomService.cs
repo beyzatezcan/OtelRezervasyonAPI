@@ -14,18 +14,51 @@ public class RoomService : IRoomService
         _context = context;
     }
 
-    // 1. TUM ODALARI LISTELE
+    // 1. TUM ODALARI LISTELE (V3: Puan sırasına göre)
     public async Task<List<RoomDto>> GetAllRoomsAsync()
     {
-        var rooms = await _context.Rooms.ToListAsync();
+        var rooms = await _context.Rooms
+            .Include(r => r.Reviews)
+            .ToListAsync();
 
-        return rooms.Select(r => _mapper.RoomToRoomDto(r)).ToList();
+        return rooms.Select(r => _mapper.RoomToRoomDto(r))
+                    .OrderByDescending(r => r.OrtalamaPuan)
+                    .ToList();
+    }
+
+    public async Task<List<RoomDto>> GetFilteredRoomsAsync(string? odaTipi, int? minKapasite, decimal? maxFiyat)
+    {
+        var query = _context.Rooms.Include(r => r.Reviews).AsQueryable();
+
+        if (!string.IsNullOrEmpty(odaTipi))
+        {
+            query = query.Where(r => r.OdaTipi == odaTipi);
+        }
+
+        if (minKapasite.HasValue)
+        {
+            query = query.Where(r => r.Kapasite >= minKapasite.Value);
+        }
+
+        if (maxFiyat.HasValue)
+        {
+            query = query.Where(r => r.GecelikFiyat <= maxFiyat.Value);
+        }
+
+        var rooms = await query.ToListAsync();
+
+        return rooms.Select(r => _mapper.RoomToRoomDto(r))
+                    .OrderByDescending(r => r.OrtalamaPuan)
+                    .ToList();
     }
 
     // 2. ID'YE GORE TEK ODA GETIR
     public async Task<RoomDto?> GetRoomByIdAsync(int id)
     {
-        var room = await _context.Rooms.FindAsync(id);
+        var room = await _context.Rooms
+            .Include(r => r.Reviews)
+                .ThenInclude(r => r.User)
+            .FirstOrDefaultAsync(r => r.Id == id);
 
         if (room == null) return null;
 
@@ -92,7 +125,12 @@ public class RoomService : IRoomService
 
         _context.Rooms.Remove(oda);
         await _context.SaveChangesAsync();
-
         return true;
+    }
+
+    // V4: Dashboard İstatistikleri
+    public async Task<int> GetTotalRoomCountAsync()
+    {
+        return await _context.Rooms.CountAsync();
     }
 }

@@ -1,0 +1,36 @@
+@model otelrezervation.Models.Blog
+@{
+    ViewData["Title"] = Model.Baslik;
+}
+
+<div class="luxury-hero" style="background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('@(string.IsNullOrEmpty(Model.ResimUrl) ? "/images/hero-bg.png" : Model.ResimUrl)'); min-height: 50vh; display: flex; align-items: center; justify-content: center; text-align: center; padding-top: 80px;">
+    <div class="container">
+        <span style="color: var(--gold); font-size: 0.9rem; letter-spacing: 2px; text-transform: uppercase;">
+            <i class="bi bi-calendar-event me-2"></i> @Model.OlusturulmaTarihi.ToString("dd MMMM yyyy")
+        </span>
+        <h1 class="mt-3" style="color: var(--white); font-family: 'Playfair Display', serif; font-size: 3rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">@Model.Baslik</h1>
+    </div>
+</div>
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="blog-content p-4 p-md-5" style="background: var(--dark-soft); border-radius: 8px; box-shadow: 0 5px 20px rgba(0,0,0,0.2);">
+                
+                <div class="mb-4 text-center">
+                    <div class="divider mx-auto mb-4" style="width: 50px; height: 2px; background: var(--gold);"></div>
+                </div>
+
+                <div style="color: var(--text-body); font-size: 1.05rem; line-height: 1.8; white-space: pre-wrap;">
+@Model.Icerik
+                </div>
+
+                <div class="mt-5 pt-4 border-top text-center" style="border-color: rgba(255,255,255,0.1) !important;">
+                    <a asp-action="Index" class="btn-gold-outline px-4 py-2">
+                        <i class="bi bi-arrow-left me-2"></i> Tüm Haberlere Dön
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

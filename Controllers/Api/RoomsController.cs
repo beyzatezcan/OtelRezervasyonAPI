@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using otelrezervation.DTOs;
 using otelrezervation.Services; 
 
@@ -6,6 +7,7 @@ namespace otelrezervation.Controllers.Api;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize(Roles = "Admin")]
 public class RoomsController : ControllerBase
 {
     // Sadece IRoomService kullaniyoruz menu gibi dusunebiliriz interface

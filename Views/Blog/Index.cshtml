@@ -1,0 +1,52 @@
+@model IEnumerable<otelrezervation.Models.Blog>
+@{
+    ViewData["Title"] = "Blog & Haberler";
+}
+
+<!-- HERO SECTION -->
+<section class="hero-section" style="background-image: linear-gradient(rgba(10, 10, 10, 0.7), rgba(10, 10, 10, 0.7)), url('/images/hero-bg.png'); height: 60vh;">
+    <div class="hero-content" style="padding-top: 15vh;">
+        <p class="hero-subtitle">Gelişmeler ve Haberler</p>
+        <h1 style="font-size: 3rem;">Lumina Blog</h1>
+        <div class="divider mx-auto mt-4"></div>
+    </div>
+</section>
+
+<!-- BLOG LIST -->
+<section class="section" style="background: var(--dark-soft);">
+    <div class="container">
+        <div class="row g-4">
+            @if (Model != null && Model.Any())
+            {
+                foreach (var blog in Model)
+                {
+                    <div class="col-md-6 col-lg-4">
+                        <div class="room-card">
+                            <div class="room-img-wrapper" style="height: 250px;">
+                                <!-- Eğer resim yoksa default resim gösteriyoruz -->
+                                <img src="@(string.IsNullOrEmpty(blog.ResimUrl) ? "/images/room-standard.png" : blog.ResimUrl)" alt="@blog.Baslik" class="img-fluid w-100 h-100" style="object-fit: cover;">
+                            </div>
+                            <div class="room-info" style="padding: 25px;">
+                                <div style="color: var(--gold); font-size: 0.85rem; font-weight: 600; margin-bottom: 10px; letter-spacing: 2px;">
+                                    @blog.OlusturulmaTarihi.ToString("dd MMMM yyyy")
+                                </div>
+                                <h3 style="font-family: var(--font-heading); color: var(--white); font-size: 1.4rem; margin-bottom: 15px;">@blog.Baslik</h3>
+                                <p style="color: var(--text-body); font-size: 0.95rem; line-height: 1.6; margin-bottom: 20px;">
+                                    @(blog.Icerik.Length > 100 ? blog.Icerik.Substring(0, 100) + "..." : blog.Icerik)
+                                </p>
+                                <a asp-action="Details" asp-route-id="@blog.Id" class="btn-gold-outline" style="padding: 8px 20px; font-size: 0.8rem;">Devamını Oku</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="col-12 text-center" style="padding: 100px 0;">
+                    <i class="bi bi-journal-x" style="font-size: 4rem; color: var(--gold); opacity: 0.3;"></i>
+                    <h3 class="mt-4" style="color: var(--text-light);">Henüz yayınlanmış bir haber bulunmuyor.</h3>
+                </div>
+            }
+        </div>
+    </div>
+</section>

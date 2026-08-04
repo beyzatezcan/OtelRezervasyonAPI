@@ -9,10 +9,12 @@ namespace otelrezervation.Controllers.Web;
 public class RoomController : Controller
 {
     private readonly IRoomService _roomService;
+    private readonly IWebHostEnvironment _env;
 
-    public RoomController(IRoomService roomService)
+    public RoomController(IRoomService roomService, IWebHostEnvironment env)
     {
         _roomService = roomService;
+        _env = env;
     }
 
     // 1. odalari listele 
@@ -38,6 +40,28 @@ public class RoomController : Controller
 
         try
         {
+            if (dto.ImageFiles != null && dto.ImageFiles.Count > 0)
+            {
+                string uploadsFolder = Path.Combine(_env.WebRootPath, "images", "rooms");
+                if (!Directory.Exists(uploadsFolder)) Directory.CreateDirectory(uploadsFolder);
+                
+                foreach(var file in dto.ImageFiles)
+                {
+                    if (file.Length > 0)
+                    {
+                        string uniqueFileName = Guid.NewGuid().ToString() + "_" + file.FileName;
+                        string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                        
+                        using (var fileStream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await file.CopyToAsync(fileStream);
+                        }
+                        
+                        dto.ImageUrls.Add("/images/rooms/" + uniqueFileName);
+                    }
+                }
+            }
+
             await _roomService.CreateRoomAsync(dto);
             TempData["SuccessMessage"] = "Oda başarıyla eklendi.";
             return RedirectToAction("Index");
@@ -63,7 +87,11 @@ public class RoomController : Controller
         var updateDto = new UpdateRoomDto
         {
             OdaNumarasi = room.OdaNumarasi,
-            GecelikFiyat = room.GecelikFiyat
+            GecelikFiyat = room.GecelikFiyat,
+            OdaTipi = room.OdaTipi,
+            Kapasite = room.Kapasite,
+            Aciklama = room.Aciklama,
+            ImageUrls = room.ImageUrls ?? new List<string>()
         };
 
         ViewBag.RoomId = room.Id;
@@ -82,6 +110,28 @@ public class RoomController : Controller
 
         try
         {
+            if (dto.ImageFiles != null && dto.ImageFiles.Count > 0)
+            {
+                string uploadsFolder = Path.Combine(_env.WebRootPath, "images", "rooms");
+                if (!Directory.Exists(uploadsFolder)) Directory.CreateDirectory(uploadsFolder);
+                
+                foreach(var file in dto.ImageFiles)
+                {
+                    if (file.Length > 0)
+                    {
+                        string uniqueFileName = Guid.NewGuid().ToString() + "_" + file.FileName;
+                        string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                        
+                        using (var fileStream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await file.CopyToAsync(fileStream);
+                        }
+                        
+                        dto.ImageUrls.Add("/images/rooms/" + uniqueFileName);
+                    }
+                }
+            }
+
             var updatedRoom = await _roomService.UpdateRoomAsync(id, dto);
             if (updatedRoom == null)
             {

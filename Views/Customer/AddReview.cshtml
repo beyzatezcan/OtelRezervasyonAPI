@@ -1,0 +1,37 @@
+@model otelrezervation.Models.Review
+@{
+    ViewData["Title"] = "Odayı Değerlendir";
+}
+
+<div class="admin-panel" style="max-width: 600px; margin: 0 auto;">
+    <h2 class="mb-4 text-center"><i class="bi bi-star-fill me-2" style="color: var(--gold);"></i>Deneyiminizi Puanlayın</h2>
+    
+    <div class="luxury-form-container p-4" style="background: var(--surface); border: 1px solid var(--border); border-radius: 8px;">
+        <form asp-action="AddReview" method="post">
+            <input type="hidden" asp-for="RoomId" />
+            
+            <div class="mb-4 text-center">
+                <label class="form-label d-block mb-3" style="color: var(--gold); font-size: 1.2rem;">Odaya Puanınız (1-5)</label>
+                <div class="rating-stars">
+                    <!-- Basit 1-5 arasi radio butonlari veya select -->
+                    <select asp-for="Puan" class="form-select mx-auto" style="max-width: 150px; background: var(--bg-dark); color: var(--gold); border-color: var(--gold);">
+                        <option value="5">⭐⭐⭐⭐⭐ (Mükemmel)</option>
+                        <option value="4">⭐⭐⭐⭐ (Çok İyi)</option>
+                        <option value="3">⭐⭐⭐ (İyi)</option>
+                        <option value="2">⭐⭐ (İdare Eder)</option>
+                        <option value="1">⭐ (Kötü)</option>
+                    </select>
+                </div>
+                <span asp-validation-for="Puan" class="text-danger mt-2 d-block"></span>
+            </div>
+
+            <div class="form-group mb-4">
+                <label asp-for="Yorum" class="form-label">Yorumunuz</label>
+                <textarea asp-for="Yorum" class="form-control" rows="5" placeholder="Oda, temizlik, hizmet hakkında deneyimlerinizi paylaşın..." style="background: rgba(0,0,0,0.2); border: 1px solid var(--border); color: var(--text-light);"></textarea>
+                <span asp-validation-for="Yorum" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn-gold w-100 py-3" style="font-size: 1.1rem;">Değerlendirmeyi Gönder</button>
+        </form>
+    </div>
+</div>

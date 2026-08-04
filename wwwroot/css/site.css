@@ -1,0 +1,693 @@
+/* ========================================
+   LUXURY HOTEL THEME - Cullinan Inspired
+   ======================================== */
+
+/* ---------- Google Fonts ---------- */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap');
+
+/* ---------- CSS Variables (Renk Paleti) ---------- */
+:root {
+    --gold: #C2A676;
+    --gold-light: #D4C4A0;
+    --gold-dark: #A68B5B;
+    --dark: #1A1A1A;
+    --dark-soft: #2C2C2C;
+    --dark-card: #232323;
+    --white: #FFFFFF;
+    --off-white: #F8F6F3;
+    --text-light: #B0B0B0;
+    --text-body: #D1D1D1;
+    --font-heading: 'Playfair Display', Georgia, serif;
+    --font-body: 'Montserrat', 'Segoe UI', sans-serif;
+    --transition: all 0.3s ease;
+}
+
+/* ---------- Global Reset ---------- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-body);
+    background-color: var(--dark);
+    color: var(--text-body);
+    line-height: 1.7;
+    overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    color: var(--white);
+    font-weight: 500;
+}
+
+a {
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+/* ---------- Scrollbar ---------- */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: var(--dark);
+}
+::-webkit-scrollbar-thumb {
+    background: var(--gold);
+    border-radius: 4px;
+}
+
+/* ---------- NAVBAR ---------- */
+.luxury-navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    padding: 20px 0;
+    transition: var(--transition);
+    background: rgba(26, 26, 26, 0.4);
+    backdrop-filter: blur(5px);
+}
+
+.luxury-navbar.scrolled {
+    background: rgba(26, 26, 26, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 12px 0;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+}
+
+.luxury-navbar .navbar-brand {
+    font-family: var(--font-heading);
+    font-size: 1.6rem;
+    color: var(--gold) !important;
+    letter-spacing: 3px;
+    font-weight: 700;
+    transition: var(--transition);
+}
+
+.luxury-navbar.scrolled .navbar-brand {
+    color: var(--gold) !important;
+}
+
+.luxury-navbar .nav-link {
+    color: rgba(255, 255, 255, 0.85) !important;
+    font-family: var(--font-heading);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 8px 16px !important;
+    position: relative;
+    text-shadow: none;
+}
+
+.luxury-navbar.scrolled .nav-link {
+    color: var(--white) !important;
+    text-shadow: none;
+}
+
+.luxury-navbar .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 1px;
+    background: var(--gold);
+    transition: var(--transition);
+    transform: translateX(-50%);
+}
+
+.luxury-navbar .nav-link:hover::after {
+    width: 60%;
+}
+
+.luxury-navbar .nav-link:hover {
+    color: var(--gold) !important;
+}
+
+/* ---------- BUTTONS ---------- */
+.btn-gold {
+    background: var(--gold);
+    color: var(--dark);
+    border: none;
+    padding: 12px 32px;
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: var(--transition);
+    cursor: pointer;
+}
+
+.btn-gold:hover {
+    background: var(--gold-dark);
+    color: var(--white);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(194, 166, 118, 0.3);
+}
+
+.btn-gold-outline {
+    background: transparent;
+    color: var(--gold);
+    border: 1px solid var(--gold);
+    padding: 12px 32px;
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: var(--transition);
+    cursor: pointer;
+}
+
+.btn-gold-outline:hover {
+    background: var(--gold);
+    color: var(--dark);
+    transform: translateY(-2px);
+}
+
+/* ---------- HERO SECTION ---------- */
+.hero-section {
+    position: relative;
+    height: 100vh;
+    min-height: 600px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    overflow: hidden;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: url('/images/hero-bg.png') center/cover no-repeat;
+    transform: scale(1.05);
+    animation: heroZoom 20s ease-in-out infinite alternate;
+}
+
+.hero-section::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(
+        to bottom,
+        rgba(26, 26, 26, 0.5) 0%,
+        rgba(26, 26, 26, 0.3) 50%,
+        rgba(26, 26, 26, 0.85) 100%
+    );
+}
+
+@keyframes heroZoom {
+    0% { transform: scale(1.05); }
+    100% { transform: scale(1.15); }
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 800px;
+    padding: 0 20px;
+}
+
+.hero-content .hero-subtitle {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 20px;
+    animation: fadeInUp 1s ease 0.3s both;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+}
+
+.hero-content h1 {
+    font-family: var(--font-heading);
+    font-size: 4.2rem;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.2;
+    margin-bottom: 24px;
+    animation: fadeInUp 1s ease 0.6s both;
+    text-shadow: 0 3px 15px rgba(0,0,0,0.6);
+}
+
+.hero-content .hero-desc {
+    font-size: 1.15rem;
+    color: rgba(255,255,255,0.9);
+    font-weight: 500;
+    margin-bottom: 40px;
+    animation: fadeInUp 1s ease 0.9s both;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+}
+
+.hero-content .btn-gold {
+    animation: fadeInUp 1s ease 1.2s both;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ---------- SECTION STYLING ---------- */
+.section {
+    padding: 100px 0;
+}
+
+.section-title {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.section-title .overline {
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 12px;
+    display: block;
+}
+
+.section-title h2 {
+    font-size: 2.8rem;
+    font-weight: 400;
+    color: var(--white);
+    margin-bottom: 16px;
+}
+
+.section-title p {
+    color: var(--text-light);
+    font-size: 1rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.section-title .divider {
+    width: 60px;
+    height: 1px;
+    background: var(--gold);
+    margin: 20px auto 0;
+}
+
+/* ---------- ROOM CARDS ---------- */
+.room-card {
+    position: relative;
+    overflow: hidden;
+    background: var(--dark-card);
+    border: 1px solid rgba(194, 166, 118, 0.1);
+    transition: var(--transition);
+    height: 100%;
+}
+
+.room-card:hover {
+    border-color: rgba(194, 166, 118, 0.3);
+    transform: translateY(-8px);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+}
+
+.room-card .room-image {
+    height: 280px;
+    overflow: hidden;
+    position: relative;
+}
+
+.room-card .room-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+}
+
+.room-card:hover .room-image img {
+    transform: scale(1.08);
+}
+
+.room-card .room-image .room-price {
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+    background: rgba(26, 26, 26, 0.85);
+    backdrop-filter: blur(8px);
+    padding: 8px 16px;
+    border: 1px solid var(--gold);
+}
+
+.room-card .room-price span {
+    font-family: var(--font-heading);
+    font-size: 1.3rem;
+    color: var(--gold);
+}
+
+.room-card .room-price small {
+    color: var(--text-light);
+    font-size: 0.75rem;
+}
+
+.room-card .room-info {
+    padding: 28px 24px;
+}
+
+.room-card .room-info h4 {
+    font-family: var(--font-heading);
+    font-size: 1.4rem;
+    margin-bottom: 16px;
+}
+
+.room-card .room-info .btn-gold-outline {
+    width: 100%;
+    text-align: center;
+    padding: 10px 20px;
+    font-size: 0.75rem;
+}
+
+/* ---------- ROOM IMAGE PLACEHOLDER ---------- */
+.room-image-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4rem;
+    color: var(--gold);
+    background: linear-gradient(135deg, var(--dark-soft) 0%, var(--dark) 100%);
+}
+
+/* ---------- FEATURES SECTION ---------- */
+.feature-item {
+    text-align: center;
+    padding: 40px 20px;
+    transition: var(--transition);
+}
+
+.feature-item:hover {
+    transform: translateY(-5px);
+}
+
+.feature-item .feature-icon {
+    font-size: 2.5rem;
+    color: var(--gold);
+    margin-bottom: 20px;
+}
+
+.feature-item h5 {
+    font-family: var(--font-heading);
+    font-size: 1.2rem;
+    margin-bottom: 12px;
+}
+
+.feature-item p {
+    color: var(--text-light);
+    font-size: 0.9rem;
+}
+
+/* ---------- FOOTER ---------- */
+.luxury-footer {
+    background: var(--dark-soft);
+    border-top: 1px solid rgba(194, 166, 118, 0.15);
+    padding: 60px 0 30px;
+}
+
+.luxury-footer .footer-brand {
+    font-family: var(--font-heading);
+    font-size: 1.8rem;
+    color: var(--gold);
+    letter-spacing: 2px;
+    margin-bottom: 16px;
+}
+
+.luxury-footer p {
+    color: var(--text-light);
+    font-size: 0.9rem;
+    line-height: 1.8;
+}
+
+.luxury-footer .footer-heading {
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 20px;
+}
+
+.luxury-footer .footer-links {
+    list-style: none;
+    padding: 0;
+}
+
+.luxury-footer .footer-links li {
+    margin-bottom: 10px;
+}
+
+.luxury-footer .footer-links a {
+    color: var(--text-light);
+    font-size: 0.9rem;
+    transition: var(--transition);
+}
+
+.luxury-footer .footer-links a:hover {
+    color: var(--gold);
+    padding-left: 5px;
+}
+
+.luxury-footer .footer-bottom {
+    border-top: 1px solid rgba(255,255,255,0.05);
+    padding-top: 24px;
+    margin-top: 40px;
+    text-align: center;
+}
+
+.luxury-footer .footer-bottom p {
+    font-size: 0.8rem;
+    color: var(--text-light);
+}
+
+/* ---------- FORMS (Login, Register, Reservation) ---------- */
+.luxury-form-container {
+    max-width: 480px;
+    margin: 120px auto 60px;
+    padding: 48px;
+    background: var(--dark-card);
+    border: 1px solid rgba(194, 166, 118, 0.15);
+}
+
+.luxury-form-container h3 {
+    font-family: var(--font-heading);
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 8px;
+}
+
+.luxury-form-container .form-subtitle {
+    text-align: center;
+    color: var(--text-light);
+    font-size: 0.9rem;
+    margin-bottom: 32px;
+}
+
+.luxury-form .form-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-light);
+    margin-bottom: 6px;
+}
+
+.luxury-form .form-control {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+    border-radius: 0;
+    color: var(--white);
+    padding: 10px 0;
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+.luxury-form .form-control:focus {
+    background: transparent;
+    border-color: var(--gold);
+    box-shadow: none;
+    color: var(--white);
+}
+
+.luxury-form .form-control::placeholder {
+    color: rgba(255,255,255,0.25);
+}
+
+.luxury-form .form-select {
+    background-color: var(--dark-soft);
+    border: none;
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+    border-radius: 0;
+    color: var(--white);
+    padding: 10px 0;
+}
+
+.luxury-form .form-select:focus {
+    border-color: var(--gold);
+    box-shadow: none;
+}
+
+.luxury-form .btn-gold {
+    width: 100%;
+    margin-top: 24px;
+    padding: 14px;
+}
+
+/* ---------- TABLES (Admin Panel) ---------- */
+.luxury-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.luxury-table thead th {
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(194, 166, 118, 0.2);
+    text-align: left;
+}
+
+.luxury-table tbody td {
+    padding: 16px 20px;
+    color: var(--text-body);
+    font-size: 0.9rem;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.luxury-table tbody tr:hover {
+    background: rgba(194, 166, 118, 0.05);
+}
+
+/* ---------- ADMIN PANEL WRAPPER ---------- */
+.admin-panel {
+    margin-top: 100px;
+    padding: 40px;
+}
+
+.admin-panel h2 {
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    margin-bottom: 32px;
+}
+
+/* ---------- ALERT MESSAGES ---------- */
+.alert-luxury {
+    background: rgba(194, 166, 118, 0.1);
+    border: 1px solid rgba(194, 166, 118, 0.3);
+    color: var(--gold);
+    padding: 14px 20px;
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+}
+
+.alert-luxury-danger {
+    background: rgba(220, 53, 69, 0.1);
+    border: 1px solid rgba(220, 53, 69, 0.3);
+    color: #ff6b6b;
+    padding: 14px 20px;
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+}
+
+/* ---------- RESPONSIVE ---------- */
+/* ---------- FLATPICKR DARK THEME ---------- */
+.flatpickr-calendar {
+    background: var(--dark-card) !important;
+    border: 1px solid rgba(194, 166, 118, 0.2) !important;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5) !important;
+}
+
+.flatpickr-months .flatpickr-month,
+.flatpickr-current-month .flatpickr-monthDropdown-months {
+    background: var(--dark-card) !important;
+    color: var(--white) !important;
+}
+
+.flatpickr-current-month input.cur-year {
+    color: var(--white) !important;
+}
+
+.flatpickr-months .flatpickr-prev-month,
+.flatpickr-months .flatpickr-next-month {
+    fill: var(--gold) !important;
+    color: var(--gold) !important;
+}
+
+span.flatpickr-weekday {
+    color: var(--gold) !important;
+    font-weight: 600;
+}
+
+.flatpickr-day {
+    color: var(--text-body) !important;
+    border-color: transparent !important;
+}
+
+.flatpickr-day:hover {
+    background: rgba(194, 166, 118, 0.2) !important;
+    border-color: var(--gold) !important;
+}
+
+.flatpickr-day.selected {
+    background: var(--gold) !important;
+    border-color: var(--gold) !important;
+    color: var(--dark) !important;
+    font-weight: 700;
+}
+
+.flatpickr-day.today {
+    border-color: var(--gold) !important;
+}
+
+.flatpickr-day.disabled, .flatpickr-day.disabled:hover {
+    background: rgba(220, 53, 69, 0.15) !important;
+    color: #ff6b6b !important;
+    text-decoration: line-through !important;
+    font-weight: bold;
+    border-color: transparent !important;
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 768px) {
+    .hero-content h1 {
+        font-size: 2.5rem;
+    }
+    
+    .section {
+        padding: 60px 0;
+    }
+    
+    .section-title h2 {
+        font-size: 2rem;
+    }
+    
+    .luxury-form-container {
+        margin: 100px 16px 40px;
+        padding: 32px 24px;
+    }
+}

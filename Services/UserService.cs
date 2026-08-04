@@ -58,6 +58,12 @@ public class UserService : IUserService
         // buradaki yapi veritabanina eklenecek veriyi hazirliyor 
         var yeniKullanici = _mapper.CreateUserDtoToUser(dto);
 
+        // V4: İlk kayıt olan kullanıcıyı otomatik olarak Admin yap
+        if (!await _context.Users.AnyAsync())
+        {
+            yeniKullanici.Role = "Admin";
+        }
+
         _context.Users.Add(yeniKullanici);
         await _context.SaveChangesAsync();
 
@@ -116,5 +122,11 @@ public class UserService : IUserService
         await _context.SaveChangesAsync();
 
         return true; // basariyla silindi
+    }
+
+    // V4: Dashboard İstatistikleri
+    public async Task<int> GetTotalUserCountAsync()
+    {
+        return await _context.Users.CountAsync();
     }
 }

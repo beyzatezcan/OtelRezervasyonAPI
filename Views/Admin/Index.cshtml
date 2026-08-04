@@ -1,0 +1,194 @@
+@{
+    ViewData["Title"] = "Ana Sayfa";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="row">
+    <!-- Rezervasyonlar -->
+    <div class="col-md-3 mb-4">
+        <div class="card shadow-sm h-100 border-0" style="background-color: #1a1a1a; border-bottom: 3px solid #d4af37 !important;">
+            <div class="card-body">
+                <h5 class="card-title text-white"><i class="bi bi-calendar-check me-2" style="color: #d4af37;"></i> Rezervasyonlar</h5>
+                <h2 class="display-6 mt-3 text-white">@ViewBag.TotalReservations</h2>
+                <a href="/Reservation" style="color: #d4af37; text-decoration: none; font-size: 0.9rem;" class="mt-2 d-block">Detayları Gör &rarr;</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Odalar -->
+    <div class="col-md-3 mb-4">
+        <div class="card shadow-sm h-100 border-0" style="background-color: #1a1a1a; border-bottom: 3px solid #d4af37 !important;">
+            <div class="card-body">
+                <h5 class="card-title text-white"><i class="bi bi-door-open me-2" style="color: #d4af37;"></i> Toplam Odalar</h5>
+                <h2 class="display-6 mt-3 text-white">@ViewBag.TotalRooms</h2>
+                @if (User.IsInRole("Admin"))
+                {
+                    <a href="/Room" style="color: #d4af37; text-decoration: none; font-size: 0.9rem;" class="mt-2 d-block">Detayları Gör &rarr;</a>
+                }
+            </div>
+        </div>
+    </div>
+    
+    <!-- Mesajlar -->
+    <div class="col-md-3 mb-4">
+        <div class="card shadow-sm h-100 border-0" style="background-color: #1a1a1a; border-bottom: 3px solid #d4af37 !important;">
+            <div class="card-body">
+                <h5 class="card-title text-white"><i class="bi bi-envelope me-2" style="color: #d4af37;"></i> Gelen Mesajlar</h5>
+                <h2 class="display-6 mt-3 text-white">@ViewBag.TotalMessages</h2>
+                @if (User.IsInRole("Admin"))
+                {
+                    <a href="/Contact/Messages" style="color: #d4af37; text-decoration: none; font-size: 0.9rem;" class="mt-2 d-block">Detayları Gör &rarr;</a>
+                }
+            </div>
+        </div>
+    </div>
+    
+    <!-- Kullanıcılar -->
+    <div class="col-md-3 mb-4">
+        <div class="card shadow-sm h-100 border-0" style="background-color: #1a1a1a; border-bottom: 3px solid #d4af37 !important;">
+            <div class="card-body">
+                <h5 class="card-title text-white"><i class="bi bi-people me-2" style="color: #d4af37;"></i> Sistem Kullanıcıları</h5>
+                <h2 class="display-6 mt-3 text-white">@ViewBag.TotalUsers</h2>
+                @if (User.IsInRole("Admin"))
+                {
+                    <a href="/UserManagement" style="color: #d4af37; text-decoration: none; font-size: 0.9rem;" class="mt-2 d-block">Detayları Gör &rarr;</a>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hızlı Müsaitlik Sorgulama -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white border-0 pt-4 pb-2">
+                <h5 style="color: #1a1a1a;"><i class="bi bi-search me-2" style="color: #C2A676;"></i> Hızlı Müsaitlik Sorgulama</h5>
+                <p class="text-muted small mb-0">Telefondaki müşteri için hızlıca boş odaları bulun.</p>
+            </div>
+            <div class="card-body">
+                <form method="get" action="/Admin/Index" class="row g-3 align-items-end">
+                    <div class="col-md-4">
+                        <label class="form-label">Giriş Tarihi</label>
+                        <input type="date" name="checkIn" class="form-control" value="@ViewBag.CheckIn" required />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Çıkış Tarihi</label>
+                        <input type="date" name="checkOut" class="form-control" value="@ViewBag.CheckOut" required />
+                    </div>
+                    <div class="col-md-4">
+                        <button type="submit" class="btn text-white w-100" style="background-color: #C2A676;">Müsait Odaları Bul</button>
+                    </div>
+                </form>
+
+                @if (ViewBag.SearchError != null)
+                {
+                    <div class="alert alert-danger mt-3 mb-0">@ViewBag.SearchError</div>
+                }
+
+                @if (ViewBag.AvailableRooms != null)
+                {
+                    <div class="mt-4">
+                        <h6>Sorgu Sonucu: <span class="badge" style="background-color: #1a1a1a;">@( ((IEnumerable<otelrezervation.Models.Room>)ViewBag.AvailableRooms).Count() ) Oda Bulundu</span></h6>
+                        <div class="table-responsive mt-3">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Oda Numarası</th>
+                                        <th>Gecelik Fiyat</th>
+                                        <th>Durum</th>
+                                        <th>İşlem</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var room in ViewBag.AvailableRooms)
+                                    {
+                                        <tr>
+                                            <td class="fw-bold">@room.OdaNumarasi</td>
+                                            <td class="text-success fw-bold">@room.GecelikFiyat.ToString("C")</td>
+                                            <td><span class="badge bg-success">Müsait</span></td>
+                                            <td>
+                                                <a href="/Reservation/Create?roomId=@room.Id&checkIn=@ViewBag.CheckIn&checkOut=@ViewBag.CheckOut" class="btn btn-sm text-white" style="background-color: #d4af37;">
+                                                    <i class="bi bi-calendar-plus"></i> Rezervasyon Yap
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white border-0 pt-4 pb-2">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 style="color: #1a1a1a;"><i class="bi bi-clock-history me-2" style="color: #C2A676;"></i> Son Rezervasyonlar</h5>
+                    <a href="/Reservation" style="color: #C2A676; text-decoration: none; font-size: 0.85rem; font-weight: 600;">Tümünü Gör &rarr;</a>
+                </div>
+            </div>
+            <div class="card-body">
+                @{
+                    var recentRes = ViewBag.RecentReservations as IEnumerable<otelrezervation.Models.Reservation>;
+                }
+                @if (recentRes != null && recentRes.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Müşteri</th>
+                                    <th>Oda</th>
+                                    <th>Giriş</th>
+                                    <th>Çıkış</th>
+                                    <th>Durum</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var r in recentRes)
+                                {
+                                    <tr>
+                                        <td class="text-muted">#@r.Id</td>
+                                        <td><strong>@r.User?.Ad @r.User?.Soyad</strong></td>
+                                        <td style="color: #C2A676; font-weight: 600;">@r.Room?.OdaNumarasi</td>
+                                        <td>@r.GirisTarihi.ToString("dd.MM.yyyy")</td>
+                                        <td>@r.CikisTarihi.ToString("dd.MM.yyyy")</td>
+                                        <td>
+                                            @if (r.Status == otelrezervation.Models.ReservationStatus.Pending)
+                                            {
+                                                <span class="badge" style="background-color: #ffc107; color: #000;">Bekliyor</span>
+                                            }
+                                            else if (r.Status == otelrezervation.Models.ReservationStatus.CheckedIn)
+                                            {
+                                                <span class="badge bg-primary">Giriş Yapıldı</span>
+                                            }
+                                            else if (r.Status == otelrezervation.Models.ReservationStatus.CheckedOut)
+                                            {
+                                                <span class="badge bg-success">Çıkış Yapıldı</span>
+                                            }
+                                            else if (r.Status == otelrezervation.Models.ReservationStatus.Cancelled)
+                                            {
+                                                <span class="badge bg-danger">İptal</span>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted text-center py-4">Henüz hiç rezervasyon bulunmuyor.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>

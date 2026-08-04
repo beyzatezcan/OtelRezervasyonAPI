@@ -1,0 +1,93 @@
+@model otelrezervation.DTOs.UpdateProfileDto
+@{
+    ViewData["Title"] = "Profilimi Düzenle";
+}
+
+<!-- HERO SECTION -->
+<section class="hero-section" style="background-image: linear-gradient(rgba(10, 10, 10, 0.8), rgba(10, 10, 10, 0.8)), url('/images/hero-bg.png'); height: 35vh; min-height: 250px;">
+    <div class="hero-content" style="padding-top: 10vh;">
+        <h1 style="font-size: 2.5rem; color: var(--gold);"><i class="bi bi-person-circle me-2"></i>Hesabım</h1>
+    </div>
+</section>
+
+<!-- PROFILE FORM -->
+<section class="section" style="background: var(--dark-soft);">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success alert-dismissible fade show" role="alert" style="background-color: rgba(40, 167, 69, 0.1); border-color: #28a745; color: #28a745;">
+                        <i class="bi bi-check-circle-fill me-2"></i> @TempData["SuccessMessage"]
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+
+                <div class="card shadow-lg border-0" style="background: var(--dark); border-top: 3px solid var(--gold) !important;">
+                    <div class="card-body p-4 p-md-5">
+                        <form asp-action="Profile" method="post">
+                            <h4 class="mb-4" style="color: var(--gold); font-family: var(--font-heading);">Kişisel Bilgiler</h4>
+                            
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <label asp-for="Ad" class="form-label text-light">Ad</label>
+                                    <input asp-for="Ad" class="form-control" style="background: rgba(255,255,255,0.05); color: white; border-color: rgba(255,255,255,0.1);" />
+                                    <span asp-validation-for="Ad" class="text-danger small"></span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label asp-for="Soyad" class="form-label text-light">Soyad</label>
+                                    <input asp-for="Soyad" class="form-control" style="background: rgba(255,255,255,0.05); color: white; border-color: rgba(255,255,255,0.1);" />
+                                    <span asp-validation-for="Soyad" class="text-danger small"></span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label text-light">E-Posta (Değiştirilemez)</label>
+                                    <input type="text" class="form-control text-muted" value="@ViewBag.UserEmail" disabled style="background: rgba(0,0,0,0.2); border-color: rgba(255,255,255,0.05);" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label asp-for="Telefon" class="form-label text-light">Telefon</label>
+                                    <input asp-for="Telefon" class="form-control" style="background: rgba(255,255,255,0.05); color: white; border-color: rgba(255,255,255,0.1);" />
+                                    <span asp-validation-for="Telefon" class="text-danger small"></span>
+                                </div>
+                            </div>
+
+                            <hr style="border-color: rgba(255,255,255,0.1); margin: 2rem 0;">
+
+                            <h4 class="mb-4" style="color: var(--gold); font-family: var(--font-heading);">Şifre Değiştir </h4>
+                            <p class="text-muted small mb-4">Şifrenizi değiştirmek istemiyorsanız bu alanları boş bırakabilirsiniz.</p>
+
+                            <div class="row g-3 mb-4">
+                                <div class="col-12">
+                                    <label asp-for="CurrentPassword" class="form-label text-light">Mevcut Şifre</label>
+                                    <input asp-for="CurrentPassword" type="password" class="form-control" style="background: rgba(255,255,255,0.05); color: white; border-color: rgba(255,255,255,0.1);" />
+                                    <span asp-validation-for="CurrentPassword" class="text-danger small"></span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label asp-for="NewPassword" class="form-label text-light">Yeni Şifre</label>
+                                    <input asp-for="NewPassword" type="password" class="form-control" style="background: rgba(255,255,255,0.05); color: white; border-color: rgba(255,255,255,0.1);" />
+                                    <span asp-validation-for="NewPassword" class="text-danger small"></span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label asp-for="ConfirmNewPassword" class="form-label text-light">Yeni Şifre (Tekrar)</label>
+                                    <input asp-for="ConfirmNewPassword" type="password" class="form-control" style="background: rgba(255,255,255,0.05); color: white; border-color: rgba(255,255,255,0.1);" />
+                                    <span asp-validation-for="ConfirmNewPassword" class="text-danger small"></span>
+                                </div>
+                            </div>
+
+                            <div class="text-end mt-5">
+                                <button type="submit" class="btn-gold">
+                                    <i class="bi bi-save me-2"></i> Bilgilerimi Güncelle
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,49 @@
+@inject otelrezervation.Services.ISiteSettingService _siteSettingService
+@{
+    ViewData["Title"] = "Hakkımızda";
+    var settings = await _siteSettingService.GetSettingsByPageAsync("About");
+}
+
+<!-- HERO SECTION -->
+<div class="luxury-hero" style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), url('/images/hotel-hero.jpg'); min-height: 55vh; display: flex; align-items: center; justify-content: center; text-align: center; padding-top: 80px;">
+    <div class="container">
+        <div style="color: var(--gold); font-size: 1rem; letter-spacing: 3px; text-transform: uppercase;">@Html.Raw(settings.FirstOrDefault(s => s.Key == "HeroSubtitle")?.Value ?? "Biz Kimiz?")</div>
+        <h1 class="mt-2" style="color: var(--white); font-family: 'Playfair Display', serif; font-size: 3.5rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">@Html.Raw(settings.FirstOrDefault(s => s.Key == "HeroTitle")?.Value ?? "Lumina Luxury Resort")</h1>
+        <div class="divider mx-auto mt-4"></div>
+    </div>
+</div>
+
+<!-- İÇERİK BÖLÜMÜ -->
+<div class="container my-5 py-4">
+    <div class="row align-items-center mb-5 pb-4">
+        <div class="col-lg-6 mb-4 mb-lg-0">
+            <img src="@(settings.FirstOrDefault(s => s.Key == "SideImage")?.Value ?? "/images/room-suite.png")" alt="Otelimiz" class="img-fluid rounded shadow-lg" style="border: 2px solid rgba(194,166,118,0.3);">
+        </div>
+        <div class="col-lg-6 ps-lg-5">
+            <h3 style="color: var(--gold); font-family: 'Playfair Display', serif; font-size: 2.2rem; margin-bottom: 20px;">@Html.Raw(settings.FirstOrDefault(s => s.Key == "ContentTitle")?.Value ?? "Lüksün ve Huzurun Buluşma Noktası")</h3>
+            <div style="color: var(--text-body); font-size: 1.1rem; line-height: 1.8;">
+                @Html.Raw(settings.FirstOrDefault(s => s.Key == "ContentText")?.Value ?? "<p>2010 yılından bu yana, misafirlerimize unutulmaz anılar biriktirecekleri kusursuz bir tatil deneyimi sunuyoruz. Akdeniz'in eşsiz maviliğine karşı konumlanan <strong>Lumina Luxury Resort</strong>, modern mimarisi ve kişiselleştirilmiş hizmet anlayışıyla bölgenin incisi konumundadır.</p><p>Geleneksel Türk misafirperverliğini uluslararası lüks standartlarıyla harmanlayarak, kendinizi her an özel hissedeceğiniz bir atmosfer yarattık. Restoranlarımız, ödüllü SPA merkezimiz ve muazzam havuzlarımızla bedeninizi ve ruhunuzu şımartmaya hazır olun.</p>")
+            </div>
+        </div>
+    </div>
+
+    <!-- MİSYON VİZYON -->
+    <div class="row g-4 mt-2">
+        <div class="col-md-6">
+            <div class="p-4 h-100" style="background: var(--dark-soft); border-left: 4px solid var(--gold); border-radius: 4px;">
+                <h4 style="color: var(--white); font-family: 'Playfair Display', serif; margin-bottom: 15px;">@Html.Raw(settings.FirstOrDefault(s => s.Key == "MissionTitle")?.Value ?? "Misyonumuz")</h4>
+                <div style="color: var(--text-light); line-height: 1.7; margin: 0;">
+                    @Html.Raw(settings.FirstOrDefault(s => s.Key == "MissionText")?.Value ?? "Misafirlerimizin beklentilerini en üst düzeyde karşılamak, çevreye ve doğaya duyarlı sürdürülebilir turizm anlayışıyla çalışarak sektörde fark yaratmak ve güleryüzlü hizmetimizle tatillerini rüya gibi bir deneyime dönüştürmektir.")
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="p-4 h-100" style="background: var(--dark-soft); border-left: 4px solid var(--gold); border-radius: 4px;">
+                <h4 style="color: var(--white); font-family: 'Playfair Display', serif; margin-bottom: 15px;">@Html.Raw(settings.FirstOrDefault(s => s.Key == "VisionTitle")?.Value ?? "Vizyonumuz")</h4>
+                <div style="color: var(--text-light); line-height: 1.7; margin: 0;">
+                    @Html.Raw(settings.FirstOrDefault(s => s.Key == "VisionText")?.Value ?? "Lüks konaklama sektöründe yenilikçi yaklaşımları takip eden, kaliteden ödün vermeyen duruşuyla hem yerel hem de uluslararası alanda en çok tercih edilen referans otellerden biri olmaktır.")
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
