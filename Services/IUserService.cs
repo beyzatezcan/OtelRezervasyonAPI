@@ -21,4 +21,7 @@ public interface IUserService
 
     // kullanici sil
     Task<bool> DeleteUserAsync(int id);
+
+    //Dashboard İstatistikleri icin
+    Task<int> GetTotalUserCountAsync();
 }

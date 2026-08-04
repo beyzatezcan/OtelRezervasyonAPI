@@ -21,8 +21,11 @@
         </div>
 
         <div class="mb-4">
-            <label asp-for="Password" class="form-label">Şifre</label>
-            <input asp-for="Password" type="password" class="form-control" placeholder="••••••" />
+            <div class="d-flex justify-content-between align-items-center">
+                <label asp-for="Password" class="form-label mb-0">Şifre</label>
+                <a asp-controller="Auth" asp-action="ForgotPassword" style="color: var(--gold); font-size: 0.75rem; text-decoration: none;">Şifremi Unuttum</a>
+            </div>
+            <input asp-for="Password" type="password" class="form-control mt-2" placeholder="••••••" />
         </div>
 
         <button type="submit" class="btn-gold">Giriş Yap</button>

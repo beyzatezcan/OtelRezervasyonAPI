@@ -12,5 +12,7 @@ public class AppDbContext : DbContext
     public DbSet<Reservation> Reservations { get; set; }
     public DbSet<Blog> Blogs { get; set; }
     public DbSet<ContactMessage> ContactMessages { get; set; }
+    public DbSet<Review> Reviews { get; set; }
+    public DbSet<SiteSetting> SiteSettings { get; set; }
 
 }

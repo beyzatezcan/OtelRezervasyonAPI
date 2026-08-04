@@ -1,8 +1,9 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace otelrezervation.Models;
+namespace otelrezervation.Models; 
 
+// blog veritabani icin blog modeli olusturduk. 
 public class Blog
 {
     [Key]
@@ -15,7 +16,7 @@ public class Blog
     [Required(ErrorMessage = "İçerik zorunludur.")]
     public string Icerik { get; set; }
 
-    public string ResimUrl { get; set; } // Blog kapak görseli için (opsiyonel)
+    public string ResimUrl { get; set; } // blog kapak görseli icin 
 
     public DateTime OlusturulmaTarihi { get; set; } = DateTime.Now;
 }

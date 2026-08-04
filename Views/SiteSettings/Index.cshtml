@@ -1,0 +1,105 @@
+@model List<otelrezervation.Models.SiteSetting>
+
+@{
+    ViewData["Title"] = "Ortak Alanlar Yönetimi";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4 mt-3">
+    <h4><i class="bi bi-layout-text-window-reverse text-secondary"></i> Ortak Alanlar Yönetimi (İletişim & Alt Bilgi)</h4>
+    <a href="/SiteSettings/PageManager" class="btn btn-outline-secondary">Geri Dön</a>
+</div>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-secondary text-white">
+        <h5 class="mb-0">Sistemde Kayıtlı Olan Tüm Ayarlar</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                        <th>Anahtar (Key)</th>
+                        <th>Değer (Value)</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var setting in Model)
+                        {
+                            <tr>
+                                <td><strong>@setting.Key</strong></td>
+                                <td>@setting.Value</td>
+                                <td>
+                                    <form asp-action="DeleteSetting" method="post" style="display:inline;" onsubmit="return confirm('Bu ayarı silmek istediğinize emin misiniz? Sitedeki görüntüsünü bozabilir.');">
+                                        <input type="hidden" name="key" value="@setting.Key" />
+                                        <input type="hidden" name="pageName" value="General" />
+                                        <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i> Sil</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="3" class="text-center text-muted">Henüz sisteme kaydedilmiş hiçbir ayar bulunmuyor. Yukarıdaki formları kullanarak ekleyebilirsiniz.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-header bg-secondary text-white">
+        <h5 class="mb-0">Ortak Alan Metni Güncelle</h5>
+    </div>
+    <div class="card-body">
+        <form asp-action="UpdateText" method="post" class="row align-items-end">
+            <div class="col-md-4">
+                <label class="form-label">Düzenlenecek Alanı Seçin</label>
+                <select name="key" class="form-select" required>
+                    <option value="" disabled selected>Bir alan seçin...</option>
+                    <option value="Contact_Phone">İletişim: Telefon Numarası</option>
+                    <option value="Contact_Email">İletişim: E-Posta Adresi</option>
+                    <option value="Contact_Address">İletişim: Açık Adres</option>
+                    <option value="Footer_About">Alt Bilgi (Footer): Hakkımızda Yazısı</option>
+                    <option disabled>────────── Sosyal Medya ──────────</option>
+                    <option value="Social_Instagram">Sosyal Medya: Instagram Linki</option>
+                    <option value="Social_Facebook">Sosyal Medya: Facebook Linki</option>
+                    <option value="Social_Twitter">Sosyal Medya: Twitter (X) Linki</option>
+                    <option value="Social_Youtube">Sosyal Medya: YouTube Linki</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Yeni Değer</label>
+                <input type="text" name="value" class="form-control" placeholder="Örn: +90 242 000 00 00" required />
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-success w-100">Kaydet</button>
+            </div>
+        </form>
+    </div>
+</div>
+

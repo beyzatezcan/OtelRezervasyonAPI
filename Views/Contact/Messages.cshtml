@@ -1,0 +1,98 @@
+@model IEnumerable<otelrezervation.Models.ContactMessage>
+@{
+    ViewData["Title"] = "Gelen İletişim Mesajları";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-white pb-0 border-0 pt-4">
+        <h5 style="color: #1a1a1a;"><i class="bi bi-envelope me-2" style="color: #d4af37;"></i> Ziyaretçi Mesajları</h5>
+    </div>
+    <div class="card-body">
+        
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="bi bi-check-circle me-1"></i> @TempData["SuccessMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        @if (!Model.Any())
+        {
+            <div class="alert alert-secondary mt-3">
+                Henüz sistemde hiçbir iletişim mesajı bulunmuyor.
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive mt-3">
+                <table class="table table-hover align-middle">
+                    <thead style="background-color: #1a1a1a; color: #d4af37;">
+                        <tr>
+                            <th style="color: #d4af37;">ID</th>
+                            <th style="color: #d4af37;">Gönderen</th>
+                            <th style="color: #d4af37;">E-Posta</th>
+                            <th style="color: #d4af37;">Tarih</th>
+                            <th style="color: #d4af37;">Mesaj Özeti</th>
+                            <th style="color: #d4af37;">İşlem</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var msg in Model)
+                        {
+                            <tr>
+                                <td>#@msg.Id</td>
+                                <td><strong>@msg.AdSoyad</strong></td>
+                                <td><a href="mailto:@msg.Email" class="text-decoration-none text-dark">@msg.Email</a></td>
+                                <td>@msg.GonderilmeTarihi.ToString("dd MMM yyyy, HH:mm")</td>
+                                <td>
+                                    <!-- Mesaji kisaltarak gosterelim (Acilir pencere veya sayfaya yonlendirme eklenebilir) -->
+                                    <span class="d-inline-block text-truncate" style="max-width: 250px;" title="@msg.Mesaj">
+                                        @msg.Mesaj
+                                    </span>
+                                </td>
+                                <td>
+                                    <!-- Modal Butonu -->
+                                    <button type="button" class="btn btn-sm" style="background-color: #1a1a1a; color: #d4af37;" data-bs-toggle="modal" data-bs-target="#msgModal-@msg.Id">
+                                        <i class="bi bi-eye"></i> Oku
+                                    </button>
+                                    
+                                    <form method="post" action="/Contact/DeleteMessage" class="d-inline ms-1" onsubmit="return confirm('Bu mesajı silmek istediğinize emin misiniz?');">
+                                        <input type="hidden" name="id" value="@msg.Id" />
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+
+                            <!-- Mesaj Okuma Modalı (Açılır Pencere) -->
+                            <div class="modal fade" id="msgModal-@msg.Id" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header border-0" style="background-color: #1a1a1a;">
+                                            <h5 class="modal-title" style="color: #d4af37;"><i class="bi bi-envelope-open me-2"></i> Mesaj Detayı</h5>
+                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p><strong>Gönderen:</strong> @msg.AdSoyad</p>
+                                            <p><strong>E-Posta:</strong> <a href="mailto:@msg.Email" class="text-decoration-none">@msg.Email</a></p>
+                                            <p><strong>Tarih:</strong> @msg.GonderilmeTarihi.ToString("dd MMM yyyy, HH:mm")</p>
+                                            <hr>
+                                            <p class="mb-0" style="white-space: pre-line;">@msg.Mesaj</p>
+                                        </div>
+                                        <div class="modal-footer border-0">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                                            <a href="mailto:@msg.Email" class="btn" style="background-color: #d4af37; color: #fff;">Cevapla (E-Posta)</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>

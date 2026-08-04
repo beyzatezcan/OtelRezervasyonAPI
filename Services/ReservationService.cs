@@ -49,6 +49,7 @@ public class ReservationService : IReservationService
         // 4. GUVENLIK: O tarihlerde oda dolu mu?
         bool isRoomTaken = await _context.Reservations.AnyAsync(r =>
             r.RoomId == dto.RoomId &&
+            r.Status != ReservationStatus.Cancelled &&
             r.GirisTarihi < dto.CikisTarihi &&
             r.CikisTarihi > dto.GirisTarihi);
 
@@ -76,5 +77,11 @@ public class ReservationService : IReservationService
         await _context.SaveChangesAsync();
 
         return true;
+    }
+
+    // V4: Dashboard İstatistikleri
+    public async Task<int> GetTotalReservationCountAsync()
+    {
+        return await _context.Reservations.CountAsync();
     }
 }

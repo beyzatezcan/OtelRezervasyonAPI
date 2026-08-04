@@ -18,7 +18,9 @@ public partial class ReservationMapper
             OdaNumarasi = r.Room?.OdaNumarasi ?? string.Empty,
             MusteriAdi = r.User != null ? $"{r.User.Ad} {r.User.Soyad}" : string.Empty,
             GirisTarihi = r.GirisTarihi,
-            CikisTarihi = r.CikisTarihi
+            CikisTarihi = r.CikisTarihi,
+            OzelIstekler = r.OzelIstekler,
+            Status = r.Status
         };
     }
 }

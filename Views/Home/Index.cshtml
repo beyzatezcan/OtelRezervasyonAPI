@@ -1,18 +1,15 @@
 @model IEnumerable<otelrezervation.DTOs.RoomDto>
+@inject otelrezervation.Services.ISiteSettingService _siteSettingService
 @{
     ViewData["Title"] = "Ana Sayfa";
-    
-    // Oda resim havuzu — odalari sirayla farkli resimlerle eslestiriyoruz
-    var roomImages = new[] { "/images/room-deluxe.png", "/images/room-suite.png", "/images/room-standard.png" };
-    int imageIndex = 0;
+    var settings = await _siteSettingService.GetAllSettingsAsync();
 }
 
-<!-- ========== HERO SECTION ========== -->
 <section class="hero-section">
     <div class="hero-content">
-        <p class="hero-subtitle">Luxury Resort & SPA</p>
-        <h1>Unutulmaz Bir Tatil<br/>Deneyimine Hoşgeldiniz</h1>
-        <p class="hero-desc">Akdeniz'in eşsiz mavisinde lüks, konfor ve huzuru bir arada yaşayın.</p>
+        <div class="hero-subtitle">@Html.Raw(settings.FirstOrDefault(s => s.Key == "HomeHeroSubtitle")?.Value ?? "Luxury Resort & SPA")</div>
+        <h1>@Html.Raw(settings.FirstOrDefault(s => s.Key == "HomeHeroTitle")?.Value ?? "Unutulmaz Bir Tatil<br/>Deneyimine Hoşgeldiniz")</h1>
+        <div class="hero-desc">@Html.Raw(settings.FirstOrDefault(s => s.Key == "HomeHeroDesc")?.Value ?? "Akdeniz'in eşsiz mavisinde lüks, konfor ve huzuru bir arada yaşayın.")</div>
         <a href="#rooms" class="btn-gold">Odalarımızı Keşfedin</a>
     </div>
 </section>
@@ -29,98 +26,146 @@
             <div class="col-lg-3 col-md-6">
                 <div class="feature-item">
                     <div class="feature-icon"><i class="bi bi-water"></i></div>
-                    <h5>Infinity Havuz</h5>
-                    <p>Deniz manzaralı açık ve kapalı yüzme havuzlarımızda serinleyin.</p>
+                    <h5>@Html.Raw(settings.FirstOrDefault(s => s.Key == "HomeFeature1_Title")?.Value ?? "Infinity Havuz")</h5>
+                    <div class="text-muted">@Html.Raw(settings.FirstOrDefault(s => s.Key == "HomeFeature1_Desc")?.Value ?? "Deniz manzaralı açık ve kapalı yüzme havuzlarımızda serinleyin.")</div>
                 </div>
             </div>
             <div class="col-lg-3 col-md-6">
                 <div class="feature-item">
                     <div class="feature-icon"><i class="bi bi-flower1"></i></div>
-                    <h5>SPA & Wellness</h5>
-                    <p>Profesyonel terapistlerimizle kendinizi baştan yaratın.</p>
+                    <h5>@Html.Raw(settings.FirstOrDefault(s => s.Key == "HomeFeature2_Title")?.Value ?? "SPA & Wellness")</h5>
+                    <div class="text-muted">@Html.Raw(settings.FirstOrDefault(s => s.Key == "HomeFeature2_Desc")?.Value ?? "Profesyonel terapistlerimizle kendinizi baştan yaratın.")</div>
                 </div>
             </div>
             <div class="col-lg-3 col-md-6">
                 <div class="feature-item">
                     <div class="feature-icon"><i class="bi bi-cup-hot"></i></div>
-                    <h5>Fine Dining</h5>
-                    <p>Ödüllü şeflerimizin hazırladığı dünya mutfağının tadını çıkarın.</p>
+                    <h5>@Html.Raw(settings.FirstOrDefault(s => s.Key == "HomeFeature3_Title")?.Value ?? "Fine Dining")</h5>
+                    <div class="text-muted">@Html.Raw(settings.FirstOrDefault(s => s.Key == "HomeFeature3_Desc")?.Value ?? "Ödüllü şeflerimizin hazırladığı dünya mutfağının tadını çıkarın.")</div>
                 </div>
             </div>
             <div class="col-lg-3 col-md-6">
                 <div class="feature-item">
                     <div class="feature-icon"><i class="bi bi-wifi"></i></div>
-                    <h5>Ücretsiz Wi-Fi</h5>
-                    <p>Tüm otel alanlarında yüksek hızlı internet erişimi.</p>
+                    <h5>@Html.Raw(settings.FirstOrDefault(s => s.Key == "HomeFeature4_Title")?.Value ?? "Ücretsiz Wi-Fi")</h5>
+                    <div class="text-muted">@Html.Raw(settings.FirstOrDefault(s => s.Key == "HomeFeature4_Desc")?.Value ?? "Tüm otel alanlarında yüksek hızlı internet erişimi.")</div>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- ========== ODALAR (ANA VİTRİN) ========== -->
+<!-- ========== ODALAR (TİPE GÖRE GRUPLU) ========== -->
 <section class="section" id="rooms">
     <div class="container">
         <div class="section-title">
-            <span class="overline">Konaklama</span>
-            <h2>Odalarımız & Süitler</h2>
-            <p>Her biri özenle tasarlanmış odalarımızda lüksün ve konforun tadını çıkarın.</p>
+            <div class="overline">@Html.Raw(settings.FirstOrDefault(s => s.Key == "HomeRoomsOverline")?.Value ?? "Konaklama")</div>
+            <h2>@Html.Raw(settings.FirstOrDefault(s => s.Key == "HomeRoomsTitle")?.Value ?? "Odalarımız & Süitler")</h2>
+            <div>@Html.Raw(settings.FirstOrDefault(s => s.Key == "HomeRoomsDesc")?.Value ?? "Her biri özenle tasarlanmış odalarımızda lüksün ve konforun tadını çıkarın.")</div>
             <div class="divider"></div>
         </div>
 
-        <div class="row g-4">
-            @if (Model != null && Model.Any())
-            {
-                foreach (var room in Model)
-                {
-                    var currentImage = roomImages[imageIndex % roomImages.Length];
-                    imageIndex++;
+        @if (Model != null && Model.Any())
+        {
+            // Kategorileri fiyata göre değil, otel hiyerarşisine (sabit sıralamaya) göre sıralayalım
+            var typeOrder = new List<string> { "Standart", "Lüks", "Suit", "Aile Odası", "Kral Dairesi" };
+            var groupedRooms = Model.GroupBy(r => r.OdaTipi)
+                                    .OrderBy(g => {
+                                        var index = typeOrder.IndexOf(g.Key);
+                                        return index == -1 ? 999 : index; // Listede olmayanları en sona at
+                                    }).ToList();
 
-                    <div class="col-lg-4 col-md-6">
-                        <div class="room-card">
-                            <div class="room-image">
-                                <img src="@currentImage" alt="Oda @room.OdaNumarasi" />
-                                <div class="room-price">
-                                    <span>@room.GecelikFiyat.ToString("N0") ₺</span>
-                                    <small> / gece</small>
+            foreach (var group in groupedRooms)
+            {
+                var roomType = group.Key;
+                string fallbackImage = "";
+
+                switch (roomType)
+                {
+                    case "Standart": fallbackImage = "/images/room-ai-standard.png"; break;
+                    case "Lüks": fallbackImage = "/images/room-ai-deluxe.png"; break;
+                    case "Suit": fallbackImage = "/images/room-ai-suite.png"; break;
+                    case "Aile Odası": fallbackImage = "/images/room-ai-family.png"; break;
+                    case "Kral Dairesi": fallbackImage = "/images/room-ai-king.png"; break;
+                    default: fallbackImage = "/images/room-ai-standard.png"; break;
+                }
+
+                <div class="mb-5">
+                    <h3 class="text-center mb-4" style="color: var(--gold); font-family: 'Playfair Display', serif; font-size: 1.8rem;">
+                        <i class="bi bi-gem me-2" style="font-size: 1.2rem;"></i>@roomType Odalar
+                    </h3>
+                    <div class="row g-4">
+                        @foreach (var room in group)
+                        {
+                            var displayImage = room.ImageUrls != null && room.ImageUrls.Count > 0 ? room.ImageUrls.First() : fallbackImage;
+                            <div class="col-lg-4 col-md-6">
+                                <div class="room-card">
+                                    <a asp-controller="Home" asp-action="RoomDetails" asp-route-id="@room.Id" style="text-decoration: none; color: inherit; display: block;">
+                                        <div class="room-image">
+                                            <img src="@displayImage" alt="Oda @room.OdaNumarasi" />
+                                            <div class="room-price">
+                                                <span>@room.GecelikFiyat.ToString("N0") ₺</span>
+                                                <small> / gece</small>
+                                            </div>
+                                        </div>
+                                        <div class="room-info">
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <h4>Oda @room.OdaNumarasi</h4>
+                                                @if (room.YorumSayisi > 0)
+                                                {
+                                                    <div class="rating" style="color: var(--gold); font-size: 0.9rem;">
+                                                        <i class="bi bi-star-fill"></i> <strong>@room.OrtalamaPuan</strong>
+                                                        <span style="color: var(--text-light); font-size: 0.8rem;">(@room.YorumSayisi değerlendirme)</span>
+                                                    </div>
+                                                }
+                                            </div>
+                                            <div class="d-flex gap-3 mb-3 text-muted" style="font-size: 0.9rem;">
+                                                <span><i class="bi bi-people" style="color: var(--gold);"></i> @room.Kapasite Kişi</span>
+                                            </div>
+                                            @if (!string.IsNullOrEmpty(room.EnSonYorum))
+                                            {
+                                                <div class="recent-review mb-3" style="font-style: italic; color: var(--text-light); font-size: 0.85rem; border-left: 2px solid var(--gold); padding-left: 10px;">
+                                                    "@room.EnSonYorum"
+                                                </div>
+                                            }
+                                        </div>
+                                    </a>
+                                    <div class="px-3 pb-3">
+                                        @if (User.Identity != null && User.Identity.IsAuthenticated)
+                                        {
+                                            @if (User.IsInRole("Admin") || User.IsInRole("Receptionist"))
+                                            {
+                                                <a asp-controller="Reservation" asp-action="Create" asp-route-roomId="@room.Id" class="btn-gold-outline">
+                                                    Manuel Rezervasyon
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                <a asp-controller="Customer" asp-action="BookRoom" asp-route-roomId="@room.Id" class="btn-gold-outline">
+                                                    Rezervasyon Yap
+                                                </a>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <a asp-controller="Auth" asp-action="Login" class="btn-gold-outline">
+                                                Rezervasyon İçin Giriş Yap
+                                            </a>
+                                        }
+                                    </div>
                                 </div>
                             </div>
-                            <div class="room-info">
-                                <h4>Oda @room.OdaNumarasi</h4>
-
-                                @if (User.Identity != null && User.Identity.IsAuthenticated)
-                                {
-                                    @if (User.IsInRole("Admin"))
-                                    {
-                                        <a asp-controller="Reservation" asp-action="Create" asp-route-roomId="@room.Id" class="btn-gold-outline">
-                                            Manuel Rezervasyon
-                                        </a>
-                                    }
-                                    else
-                                    {
-                                        <a asp-controller="Customer" asp-action="BookRoom" asp-route-roomId="@room.Id" class="btn-gold-outline">
-                                            Rezervasyon Yap
-                                        </a>
-                                    }
-                                }
-                                else
-                                {
-                                    <a asp-controller="Auth" asp-action="Login" class="btn-gold-outline">
-                                        Rezervasyon İçin Giriş Yap
-                                    </a>
-                                }
-                            </div>
-                        </div>
+                        }
                     </div>
-                }
-            }
-            else
-            {
-                <div class="col-12 text-center" style="padding: 60px 0;">
-                    <i class="bi bi-building" style="font-size: 4rem; color: var(--gold); opacity: 0.4;"></i>
-                    <p class="mt-3" style="color: var(--text-light); font-size: 1.1rem;">Şu an sistemimizde kayıtlı oda bulunmamaktadır.</p>
                 </div>
             }
-        </div>
+        }
+        else
+        {
+            <div class="col-12 text-center" style="padding: 60px 0;">
+                <i class="bi bi-building" style="font-size: 4rem; color: var(--gold); opacity: 0.4;"></i>
+                <p class="mt-3" style="color: var(--text-light); font-size: 1.1rem;">Şu an sistemimizde kayıtlı oda bulunmamaktadır.</p>
+            </div>
+        }
     </div>
 </section>

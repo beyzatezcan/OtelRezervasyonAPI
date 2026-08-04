@@ -28,13 +28,18 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // 3. Service katmani kayitlari (DI)
-// IUserService istenirse, ona UserService ver
+builder.Services.AddMemoryCache(); // For SiteSettings Cache
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IRoomService, RoomService>();
 builder.Services.AddScoped<IReservationService, ReservationService>();
-builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IEmailService, EmailService>(); 
+builder.Services.AddScoped<ISiteSettingService, SiteSettingService>(); 
+builder.Services.AddScoped<IBlogService, BlogService>();
+builder.Services.AddScoped<IContactService, ContactService>();
 
 var app = builder.Build();
+
+
 
 // 3. Swagger arayuzunu tarayicida yansitma izni (Sadece gelistirme ortaminda)
 if (app.Environment.IsDevelopment())

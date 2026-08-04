@@ -1,13 +1,19 @@
 @model otelrezervation.Models.ContactMessage
+@inject otelrezervation.Services.ISiteSettingService _siteSettingService
 @{
     ViewData["Title"] = "İletişim";
+    var settings = await _siteSettingService.GetSettingsByPageAsync("Contact");
+    
+    var phone = _siteSettingService.GetValue("Contact_Phone", "+90 242 000 00 00");
+    var email = _siteSettingService.GetValue("Contact_Email", "info@luminaresort.com");
+    var address = _siteSettingService.GetValue("Contact_Address", "Konyaaltı, Antalya");
 }
 
 <!-- HERO SECTION -->
-<section class="hero-section" style="background-image: linear-gradient(rgba(10, 10, 10, 0.7), rgba(10, 10, 10, 0.7)), url('/images/room-suite.png'); height: 60vh;">
+<section class="hero-section" style="background-image: linear-gradient(rgba(10, 10, 10, 0.7), rgba(10, 10, 10, 0.7)), url('@Html.Raw(settings.FirstOrDefault(s => s.Key == "ContactHeroImage")?.Value ?? "/images/room-suite.png")'); height: 60vh;">
     <div class="hero-content" style="padding-top: 15vh;">
-        <p class="hero-subtitle">Bize Ulaşın</p>
-        <h1 style="font-size: 3rem;">Lumina İletişim</h1>
+        <div class="hero-subtitle">@Html.Raw(settings.FirstOrDefault(s => s.Key == "ContactHeroSubtitle")?.Value ?? "Bize Ulaşın")</div>
+        <h1 style="font-size: 3rem;">@Html.Raw(settings.FirstOrDefault(s => s.Key == "ContactHeroTitle")?.Value ?? "Lumina İletişim")</h1>
         <div class="divider mx-auto mt-4"></div>
     </div>
 </section>
@@ -21,12 +27,12 @@
             <div class="col-lg-5 mb-5 mb-lg-0">
                 <div style="padding-right: 50px;">
                     <span class="overline">İletişim Bilgileri</span>
-                    <h2 style="color: var(--white); font-family: var(--font-heading); font-size: 2.5rem; margin-bottom: 30px;">
-                        Sorularınız için<br/>buradayız
-                    </h2>
-                    <p style="color: var(--text-light); margin-bottom: 40px; font-size: 1.1rem;">
-                        Unutulmaz tatilinizle ilgili her türlü soru, görüş ve öneriniz için bizimle iletişime geçebilirsiniz. Müşteri temsilcilerimiz en kısa sürede size geri dönüş yapacaktır.
-                    </p>
+                    <div style="color: var(--white); font-family: var(--font-heading); font-size: 2.5rem; margin-bottom: 30px;">
+                        @Html.Raw(settings.FirstOrDefault(s => s.Key == "ContactSectionTitle")?.Value ?? "Sorularınız için<br/>buradayız")
+                    </div>
+                    <div style="color: var(--text-light); margin-bottom: 40px; font-size: 1.1rem;">
+                        @Html.Raw(settings.FirstOrDefault(s => s.Key == "ContactSectionDesc")?.Value ?? "Unutulmaz tatilinizle ilgili her türlü soru, görüş ve öneriniz için bizimle iletişime geçebilirsiniz. Müşteri temsilcilerimiz en kısa sürede size geri dönüş yapacaktır.")
+                    </div>
                     
                     <div class="d-flex align-items-start mb-4">
                         <div style="width: 50px; height: 50px; background: rgba(194, 166, 118, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 20px;">
@@ -34,7 +40,7 @@
                         </div>
                         <div>
                             <h5 style="color: var(--white); margin-bottom: 5px;">Adres</h5>
-                            <p style="color: var(--text-light); margin: 0;">Lumina Koyu, Akdeniz Blv. No: 1<br/>Antalya, Türkiye</p>
+                            <p style="color: var(--text-light); margin: 0;">@address</p>
                         </div>
                     </div>
                     
@@ -44,7 +50,7 @@
                         </div>
                         <div>
                             <h5 style="color: var(--white); margin-bottom: 5px;">Telefon</h5>
-                            <p style="color: var(--text-light); margin: 0;">+90 (242) 555 00 00</p>
+                            <p style="color: var(--text-light); margin: 0;">@phone</p>
                         </div>
                     </div>
                     
@@ -54,7 +60,7 @@
                         </div>
                         <div>
                             <h5 style="color: var(--white); margin-bottom: 5px;">E-Posta</h5>
-                            <p style="color: var(--text-light); margin: 0;">info@luminaresort.com</p>
+                            <p style="color: var(--text-light); margin: 0;">@email</p>
                         </div>
                     </div>
                 </div>

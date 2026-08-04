@@ -34,7 +34,7 @@
                                 <p style="color: var(--text-body); font-size: 0.95rem; line-height: 1.6; margin-bottom: 20px;">
                                     @(blog.Icerik.Length > 100 ? blog.Icerik.Substring(0, 100) + "..." : blog.Icerik)
                                 </p>
-                                <a href="#" class="btn-gold-outline" style="padding: 8px 20px; font-size: 0.8rem;">Devamını Oku</a>
+                                <a asp-action="Details" asp-route-id="@blog.Id" class="btn-gold-outline" style="padding: 8px 20px; font-size: 0.8rem;">Devamını Oku</a>
                             </div>
                         </div>
                     </div>

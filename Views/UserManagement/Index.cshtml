@@ -1,0 +1,93 @@
+@model IEnumerable<otelrezervation.Models.User>
+@{
+    ViewData["Title"] = "Personel ve Kullanıcı Yönetimi";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-white pb-0 border-0 pt-4">
+        <h5 class="mb-0"><i class="bi bi-people me-2"></i> Sistemdeki Tüm Kullanıcılar</h5>
+    </div>
+    <div class="card-body">
+        
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="bi bi-check-circle me-1"></i> @TempData["SuccessMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-triangle me-1"></i> @TempData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        <div class="table-responsive mt-3">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Ad Soyad</th>
+                        <th>E-Posta</th>
+                        <th>Telefon No</th>
+                        <th>Mevcut Rol</th>
+                        <th>Rol Değiştir (Yetkilendir)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model)
+                    {
+                        <tr>
+                            <td>#@user.Id</td>
+                            <td><strong>@user.Ad @user.Soyad</strong></td>
+                            <td>@user.Email</td>
+                            <td>@user.Telefon</td>
+                            <td>
+                                @if(user.Role == "Admin")
+                                {
+                                    <span class="badge bg-danger">Admin</span>
+                                }
+                                else if(user.Role == "Receptionist")
+                                {
+                                    <span class="badge bg-info text-dark">Resepsiyonist</span>
+                                }
+                                else if(user.Role == "Marketing")
+                                {
+                                    <span class="badge bg-warning text-dark">Pazarlama</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">Müşteri</span>
+                                }
+                            </td>
+                            <td>
+                                <!-- Kendi kendini yetkisizlestirmesini onleyelim -->
+                                @if (user.Email != User.Identity?.Name)
+                                {
+                                    <form method="post" asp-controller="UserManagement" asp-action="ChangeRole" class="d-flex gap-2">
+                                        <input type="hidden" name="userId" value="@user.Id" />
+                                        <select name="newRole" class="form-select form-select-sm" style="width: 150px;">
+                                            <option value="Customer" selected="@(user.Role == "Customer")">Müşteri</option>
+                                            <option value="Receptionist" selected="@(user.Role == "Receptionist")">Resepsiyonist</option>
+                                            <option value="Marketing" selected="@(user.Role == "Marketing")">Pazarlama (Marketing)</option>
+                                            <option value="Admin" selected="@(user.Role == "Admin")">Yönetici (Admin)</option>
+                                        </select>
+                                        <button type="submit" class="btn btn-sm btn-primary">Uygula</button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <span class="text-muted small"><em>Kendi rolünüzü değiştiremezsiniz</em></span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

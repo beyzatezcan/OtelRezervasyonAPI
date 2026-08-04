@@ -7,7 +7,14 @@
     <h3>Oda Düzenle</h3>
     <p class="form-subtitle">Oda bilgilerini güncelleyin</p>
 
-    <form asp-controller="Room" asp-action="Edit" asp-route-id="@ViewBag.RoomId" method="post" class="luxury-form">
+    <form asp-controller="Room" asp-action="Edit" asp-route-id="@ViewBag.RoomId" method="post" enctype="multipart/form-data" class="luxury-form">
+        @if (Model.ImageUrls != null)
+        {
+            for (int i = 0; i < Model.ImageUrls.Count; i++)
+            {
+                <input type="hidden" name="ImageUrls[@i]" value="@Model.ImageUrls[i]" />
+            }
+        }
         <div class="mb-4">
             <label asp-for="OdaNumarasi" class="form-label">Oda Numarası</label>
             <input asp-for="OdaNumarasi" class="form-control" />
@@ -20,7 +27,75 @@
             <span asp-validation-for="GecelikFiyat" style="color: #ff6b6b; font-size: 0.8rem;"></span>
         </div>
 
+        <div class="mb-4">
+            <label asp-for="OdaTipi" class="form-label">Oda Tipi</label>
+            <select asp-for="OdaTipi" class="form-select">
+                <option value="Standart">Standart</option>
+                <option value="Lüks">Lüks</option>
+                <option value="Suit">Suit</option>
+                <option value="Aile Odası">Aile Odası</option>
+                <option value="Kral Dairesi">Kral Dairesi</option>
+            </select>
+            <span asp-validation-for="OdaTipi" style="color: #ff6b6b; font-size: 0.8rem;"></span>
+        </div>
+
+        <div class="mb-4">
+            <label asp-for="Kapasite" class="form-label">Kapasite (Kişi Sayısı)</label>
+            <input asp-for="Kapasite" type="number" class="form-control" />
+            <span asp-validation-for="Kapasite" style="color: #ff6b6b; font-size: 0.8rem;"></span>
+        </div>
+
+        <div class="mb-4">
+            <label asp-for="Aciklama" class="form-label">Oda Açıklaması (Opsiyonel)</label>
+            <textarea asp-for="Aciklama" class="form-control" rows="4"></textarea>
+            <span asp-validation-for="Aciklama" style="color: #ff6b6b; font-size: 0.8rem;"></span>
+        </div>
+
+        <div class="mb-4">
+            <label asp-for="ImageFiles" class="form-label">Yeni Fotoğraflar Ekle (Birden fazla seçebilirsiniz)</label>
+            @if (Model.ImageUrls != null && Model.ImageUrls.Count > 0)
+            {
+                <div id="existingImages" class="mb-3 d-flex flex-wrap gap-2">
+                    @for (int j = 0; j < Model.ImageUrls.Count; j++)
+                    {
+                        <div class="position-relative image-thumb" data-index="@j">
+                            <img src="@Model.ImageUrls[j]" alt="Mevcut Fotoğraf" style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px; border: 1px solid var(--gold);" />
+                            <button type="button" class="btn-remove-img" onclick="removeImage(this)" title="Bu fotoğrafı kaldır"
+                                style="position: absolute; top: -6px; right: -6px; background: #dc3545; color: white; border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 12px; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 1px 3px rgba(0,0,0,0.3);">
+                                ✕
+                            </button>
+                        </div>
+                    }
+                </div>
+                 }
+            <input asp-for="ImageFiles" type="file" accept="image/*" multiple class="form-control" />
+        </div>
+
         <button type="submit" class="btn-gold">Değişiklikleri Kaydet</button>
         <a asp-controller="Room" asp-action="Index" class="btn-gold-outline" style="width: 100%; text-align: center; margin-top: 10px; display: block;">İptal</a>
     </form>
 </div>
+
+<script>
+function removeImage(btn) {
+    var thumb = btn.closest('.image-thumb');
+    thumb.remove();
+
+    // Kalan hidden input'ları temizle ve yeniden numaralandır
+    var hiddens = document.querySelectorAll('input[name^="ImageUrls["]');
+    hiddens.forEach(function(el) { el.remove(); });
+
+    var remaining = document.querySelectorAll('#existingImages .image-thumb');
+    var form = document.querySelector('form.luxury-form');
+    var firstChild = form.firstChild;
+
+    remaining.forEach(function(el, idx) {
+        var imgSrc = el.querySelector('img').getAttribute('src');
+        var hidden = document.createElement('input');
+        hidden.type = 'hidden';
+        hidden.name = 'ImageUrls[' + idx + ']';
+        hidden.value = imgSrc;
+        form.insertBefore(hidden, firstChild);
+    });
+}
+</script>

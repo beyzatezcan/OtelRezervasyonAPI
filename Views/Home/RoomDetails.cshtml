@@ -1,0 +1,184 @@
+@model otelrezervation.DTOs.RoomDto
+@{
+    ViewData["Title"] = Model.OdaTipi + " - Oda " + Model.OdaNumarasi;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Oda Detay Hero Alanı -->
+<div class="luxury-hero" style="background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7)), url('/images/hotel-hero.jpg'); min-height: 30vh; display: flex; align-items: center; justify-content: center; text-align: center; padding-top: 80px;">
+    <div class="container">
+        <h1 style="color: var(--gold); font-family: 'Playfair Display', serif; font-size: 3rem; margin-bottom: 20px; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">@Model.OdaTipi Odalarımız</h1>
+        <p style="color: var(--white); font-size: 1.1rem; max-width: 600px; margin: 0 auto;">Lumina Resort'un ayrıcalıklı dünyasına hoş geldiniz.</p>
+    </div>
+</div>
+
+<div class="container my-5">
+    <div class="row">
+        <!-- Sol Taraf: Fotoğraf Galerisi ve Açıklama -->
+        <div class="col-lg-8 mb-4">
+            <!-- Carousel (Fotoğraf Galerisi) -->
+            <div id="roomGallery" class="carousel slide mb-4 shadow-sm" data-bs-ride="carousel" style="border-radius: 12px; overflow: hidden; border: 1px solid rgba(212, 175, 55, 0.2);">
+                <div class="carousel-inner">
+                    @if (Model.ImageUrls != null && Model.ImageUrls.Count > 0)
+                    {
+                        for (int i = 0; i < Model.ImageUrls.Count; i++)
+                        {
+                            <div class="carousel-item @(i == 0 ? "active" : "")">
+                                <img src="@Model.ImageUrls[i]" class="d-block w-100" alt="Oda Fotoğrafı" style="height: 500px; object-fit: cover;">
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        string fallbackImage = "";
+                        switch (Model.OdaTipi)
+                        {
+                            case "Standart": fallbackImage = "/images/room-ai-standard.png"; break;
+                            case "Lüks": fallbackImage = "/images/room-ai-deluxe.png"; break;
+                            case "Suit": fallbackImage = "/images/room-ai-suite.png"; break;
+                            case "Aile Odası": fallbackImage = "/images/room-ai-family.png"; break;
+                            case "Kral Dairesi": fallbackImage = "/images/room-ai-king.png"; break;
+                            default: fallbackImage = "/images/room-ai-standard.png"; break;
+                        }
+                        
+                        <div class="carousel-item active">
+                            <img src="@fallbackImage" class="d-block w-100" alt="Oda Fotoğrafı" style="height: 500px; object-fit: cover;">
+                        </div>
+                    }
+                </div>
+                
+                @if (Model.ImageUrls != null && Model.ImageUrls.Count > 1)
+                {
+                    <button class="carousel-control-prev" type="button" data-bs-target="#roomGallery" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Önceki</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#roomGallery" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Sonraki</span>
+                    </button>
+                }
+            </div>
+
+            <!-- Oda Açıklaması -->
+            <div class="card border-0 shadow-sm p-4 mb-4" style="border-radius: 12px;">
+                <h3 style="color: var(--gold); font-family: 'Playfair Display', serif;" class="mb-3">Oda Hakkında</h3>
+                <p style="color: var(--text-light); line-height: 1.8; white-space: pre-wrap;">@(string.IsNullOrEmpty(Model.Aciklama) ? "Bu oda için henüz detaylı bir açıklama girilmemiştir. Ancak standart Lumina Resort konforunu deneyimleyeceğinizden emin olabilirsiniz." : Model.Aciklama)</p>
+                
+                <hr style="border-color: rgba(212, 175, 55, 0.2);" class="my-4">
+                
+                <div class="row text-center" style="color: var(--gold);">
+                    <div class="col-4">
+                        <i class="bi bi-people fs-2 mb-2"></i>
+                        <h6 style="color: var(--text-main);">Kapasite</h6>
+                        <small class="text-muted">@Model.Kapasite Kişi</small>
+                    </div>
+                    <div class="col-4">
+                        <i class="bi bi-wifi fs-2 mb-2"></i>
+                        <h6 style="color: var(--text-main);">İnternet</h6>
+                        <small class="text-muted">Ücretsiz Wi-Fi</small>
+                    </div>
+                    <div class="col-4">
+                        <i class="bi bi-cup-hot fs-2 mb-2"></i>
+                        <h6 style="color: var(--text-main);">İkram</h6>
+                        <small class="text-muted">Çay / Kahve Seti</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sağ Taraf: Fiyat ve Rezervasyon Kartı -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow p-4 sticky-top" style="top: 100px; border-radius: 12px; background: linear-gradient(145deg, #ffffff, #fcfcfc);">
+                <div class="text-center mb-4">
+                    <span style="font-size: 2.5rem; color: var(--gold); font-weight: bold;">@Model.GecelikFiyat.ToString("N0") ₺</span>
+                    <span class="text-muted">/ gece</span>
+                </div>
+
+                @if (Model.YorumSayisi > 0)
+                {
+                    <div class="d-flex align-items-center justify-content-center gap-2 mb-4 p-2 rounded" style="background-color: rgba(212, 175, 55, 0.1);">
+                        <i class="bi bi-star-fill" style="color: var(--gold);"></i>
+                        <strong style="color: var(--text-main);">@Model.OrtalamaPuan / 5</strong>
+                        <span class="text-muted">(@Model.YorumSayisi değerlendirme)</span>
+                    </div>
+                }
+
+                <div class="d-grid gap-3 mt-4">
+                    @if (User.Identity != null && User.Identity.IsAuthenticated)
+                    {
+                        @if (User.IsInRole("Admin") || User.IsInRole("Receptionist"))
+                        {
+                            <a asp-controller="Reservation" asp-action="Create" asp-route-roomId="@Model.Id" class="btn btn-gold btn-lg" style="width: 100%; display: block; text-align: center;">
+                                Manuel Rezervasyon Oluştur
+                            </a>
+                        }
+                        else
+                        {
+                            <a asp-controller="Customer" asp-action="BookRoom" asp-route-roomId="@Model.Id" class="btn btn-gold btn-lg" style="width: 100%; display: block; text-align: center;">
+                                Hemen Rezervasyon Yap
+                            </a>
+                        }
+                    }
+                    else
+                    {
+                        <a asp-controller="Auth" asp-action="Login" class="btn btn-gold-outline btn-lg" style="width: 100%; display: block; text-align: center;">
+                            Rezervasyon İçin Giriş Yap
+                        </a>
+                    }
+                </div>
+                
+                <div class="text-center mt-4">
+                    <small class="text-muted"><i class="bi bi-shield-check text-success me-1"></i> Güvenli Rezervasyon</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- YORUMLAR BÖLÜMÜ -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <h3 style="color: var(--gold); font-family: 'Playfair Display', serif;" class="mb-4">Misafir Değerlendirmeleri</h3>
+            
+            @if (Model.Yorumlar != null && Model.Yorumlar.Any())
+            {
+                <div class="row">
+                    @foreach (var yorum in Model.Yorumlar)
+                    {
+                        <div class="col-md-6 mb-4">
+                            <div class="card border-0 shadow-sm p-4 h-100" style="border-radius: 12px; background: var(--bg-dark); border-left: 4px solid var(--gold) !important;">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <i class="bi bi-person-circle fs-3 text-muted"></i>
+                                        <h6 class="mb-0" style="color: var(--text-light);">@yorum.KullaniciAdSoyad</h6>
+                                    </div>
+                                    <div class="text-warning">
+                                        @for (int i = 0; i < yorum.Puan; i++)
+                                        {
+                                            <i class="bi bi-star-fill"></i>
+                                        }
+                                        @for (int i = yorum.Puan; i < 5; i++)
+                                        {
+                                            <i class="bi bi-star"></i>
+                                        }
+                                    </div>
+                                </div>
+                                <p style="color: var(--text-light); opacity: 0.8; font-size: 0.95rem;">"@yorum.Yorum"</p>
+                                <div class="text-end mt-auto">
+                                    <small class="text-muted">@yorum.Tarih.ToString("dd MMM yyyy")</small>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="alert text-center p-5 border-0 shadow-sm" style="background: var(--bg-dark); border-radius: 12px;">
+                    <i class="bi bi-chat-square-text text-muted mb-3" style="font-size: 3rem;"></i>
+                    <p style="color: var(--text-light);">Bu oda için henüz bir değerlendirme yapılmamış. <br/>İlk değerlendiren siz olun!</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>

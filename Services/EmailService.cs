@@ -23,9 +23,10 @@ namespace otelrezervation.Services
                 var emailSettings = _config.GetSection("EmailSettings");
                 string fromEmail = emailSettings["SenderEmail"];
                 string fromName = emailSettings["SenderName"];
+                string username = emailSettings["Username"];
                 string password = emailSettings["Password"];
-                string host = emailSettings["SmtpServer"];
-                int port = int.Parse(emailSettings["Port"]);
+                string host = emailSettings["SmtpServer"];     
+                int port = int.Parse(emailSettings["Port"]); 
 
                 if(string.IsNullOrEmpty(fromEmail) || string.IsNullOrEmpty(password))
                 {
@@ -47,12 +48,12 @@ namespace otelrezervation.Services
                 var builder = new BodyBuilder { HtmlBody = body };
                 email.Body = builder.ToMessageBody();
 
-                using var smtp = new SmtpClient();
+                using var smtp = new SmtpClient(); 
                 // SMTP yani simple mail transfer protocol, web sitesi icin HTTP ne ise e-posta icin smtp odur. 
-                // TL
+                // TLS yani transport layer security, verilerin sifrelenerek iletilmesini saglar. https ile ayni mantikta calisir.
                 // Google SMTP için StartTls kullanıyoruz
-                await smtp.ConnectAsync(host, port, SecureSocketOptions.StartTls);
-                await smtp.AuthenticateAsync(fromEmail, password);
+                await smtp.ConnectAsync(host, port, SecureSocketOptions.StartTls); // connect to server 
+                await smtp.AuthenticateAsync(username, password); 
                 await smtp.SendAsync(email);
                 await smtp.DisconnectAsync(true);
             }

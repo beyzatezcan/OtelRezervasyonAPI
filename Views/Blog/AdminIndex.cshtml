@@ -1,0 +1,65 @@
+@model IEnumerable<otelrezervation.Models.Blog>
+@{
+    ViewData["Title"] = "Blog Yönetimi";
+    Layout = "_AdminLayout";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 style="color: var(--gold); font-family: 'Playfair Display', serif;">Blog Yazıları</h4>
+    <a asp-action="Create" class="btn btn-gold"><i class="bi bi-plus-circle me-1"></i> Yeni Yazı Ekle</a>
+</div>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="card shadow-sm border-0">
+    <div class="card-body p-0 table-responsive">
+        <table class="table table-hover mb-0">
+            <thead style="background-color: var(--dark);">
+                <tr>
+                    <th style="color: var(--gold);">ID</th>
+                    <th style="color: var(--gold);">Başlık</th>
+                    <th style="color: var(--gold);">Oluşturulma Tarihi</th>
+                    <th style="color: var(--gold);" class="text-end">İşlemler</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var blog in Model)
+                    {
+                        <tr>
+                            <td>#@blog.Id</td>
+                            <td class="fw-bold">@blog.Baslik</td>
+                            <td>@blog.OlusturulmaTarihi.ToString("dd.MM.yyyy HH:mm")</td>
+                            <td class="text-end">
+                                <a asp-action="Edit" asp-route-id="@blog.Id" class="btn btn-sm btn-outline-secondary me-2">
+                                    <i class="bi bi-pencil"></i> Düzenle
+                                </a>
+                                <form asp-action="Delete" asp-route-id="@blog.Id" method="post" class="d-inline" onsubmit="return confirm('Bu blog yazısını silmek istediğinize emin misiniz?');">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                        <i class="bi bi-trash"></i> Sil
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="4" class="text-center py-4 text-muted">
+                            <i class="bi bi-journal-x fs-1 d-block mb-2"></i>
+                            Henüz hiç blog yazısı eklenmemiş.
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -10,4 +10,6 @@ public class ReservationDto
     public string MusteriAdi { get; set; } = string.Empty;   // YENI: UserId yerine musterinin Ad+Soyad bilgisi
     public DateTime GirisTarihi { get; set; }
     public DateTime CikisTarihi { get; set; }
+    public string? OzelIstekler { get; set; }
+    public otelrezervation.Models.ReservationStatus Status { get; set; }
 }

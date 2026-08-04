@@ -1,5 +1,13 @@
 namespace otelrezervation.Models;
 
+public enum ReservationStatus // durumlar
+{
+    Pending,      
+    CheckedIn,      
+    CheckedOut,     
+    Cancelled       
+}
+
 public class Reservation
 {
     public int Id { get; set; }
@@ -11,6 +19,10 @@ public class Reservation
     // tarih bilgileri
     public DateTime GirisTarihi { get; set; }
     public DateTime CikisTarihi { get; set; }
+
+    public string? OzelIstekler { get; set; } // odadan istegimiz seyler 
+
+    public ReservationStatus Status { get; set; } = ReservationStatus.Pending; 
 
     // navigation property'ler (iliskisel baglantilar)
     // bu sayede reservation uzerinden room ve user bilgilerine erisebiliriz

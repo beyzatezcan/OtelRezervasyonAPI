@@ -1,0 +1,239 @@
+@model List<otelrezervation.Models.SiteSetting>
+
+@{
+    ViewData["Title"] = "Odalar (Düzenleme Modu)";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    
+    // Helper to get value
+    string GetVal(string key, string defaultVal) {
+        var setting = Model.FirstOrDefault(s => s.Key == key);
+        return setting?.Value ?? defaultVal;
+    }
+}
+
+<!-- Frontend CSS for accurate preview -->
+<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+<div class="d-flex justify-content-between align-items-center mb-4 mt-3">
+    <h4><i class="bi bi-brush text-success"></i> Konaklama / Odalar (Görsel Düzenleyici)</h4>
+    <div>
+        <button class="btn btn-primary" onclick="saveAllChanges()"><i class="bi bi-save"></i> Tüm Değişiklikleri Kaydet</button>
+        <a href="/SiteSettings/PageManager" class="btn btn-secondary">İptal</a>
+    </div>
+</div>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+<div class="visual-editor-container border rounded bg-white shadow-sm" style="overflow: hidden; pointer-events: auto;">
+    
+    <!-- ========== HERO SECTION PREVIEW & EDIT ========== -->
+    <div class="position-relative">
+        <!-- Edit Image Button Overlay -->
+        <div class="position-absolute top-0 end-0 m-3 z-3">
+            <button class="btn btn-dark btn-sm shadow" data-bs-toggle="modal" data-bs-target="#imageModal_RoomsHeroImage">
+                <i class="bi bi-image"></i> Arka Planı Değiştir
+            </button>
+        </div>
+
+        <div class="luxury-hero" style="background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7)), url('@GetVal("RoomsHeroImage", "/images/hotel-hero.jpg")'); min-height: 40vh; display: flex; align-items: center; justify-content: center; text-align: center; padding-top: 80px;">
+            <div class="container">
+                <h1 class="editable-inline" data-key="RoomsHeroTitle" style="color: var(--gold); font-family: 'Playfair Display', serif; font-size: 3rem; margin-bottom: 20px; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">@Html.Raw(GetVal("RoomsHeroTitle", "Eşsiz Bir Deneyim Sizi Bekliyor"))</h1>
+                <p class="editable-inline" data-key="RoomsHeroDesc" style="color: var(--white); font-size: 1.1rem; max-width: 600px; margin: 0 auto;">@Html.Raw(GetVal("RoomsHeroDesc", "Konforun ve lüksün yeniden tanımlandığı odalarımızda unutulmaz bir tatil geçirin."))</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== ODA TİPİ AÇIKLAMALARI PREVIEW & EDIT ========== -->
+    <section class="section bg-light">
+        <div class="container mt-4 mb-5">
+            <h3 class="text-center mb-4" style="color: var(--gold);">Oda Tipi Açıklamaları (Düzenlenebilir)</h3>
+            <div class="row g-4">
+                
+                <div class="col-md-6">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-body">
+                            <h5 class="card-title text-dark border-bottom pb-2">Standart Odalar</h5>
+                            <div class="editable-block mt-3 text-muted" data-key="RoomsDesc_Standart" style="min-height: 50px;">
+                                @Html.Raw(GetVal("RoomsDesc_Standart", "Temel ihtiyaçlarınız için lüks standartlarında, konforlu ve şık bir konaklama deneyimi."))
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-body">
+                            <h5 class="card-title text-dark border-bottom pb-2">Lüks Odalar</h5>
+                            <div class="editable-block mt-3 text-muted" data-key="RoomsDesc_Lüks" style="min-height: 50px;">
+                                @Html.Raw(GetVal("RoomsDesc_Lüks", "Ekstra konfor ve premium ayrıcalıklarla donatılmış geniş yaşam alanı."))
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-body">
+                            <h5 class="card-title text-dark border-bottom pb-2">Suit Odalar</h5>
+                            <div class="editable-block mt-3 text-muted" data-key="RoomsDesc_Suit" style="min-height: 50px;">
+                                @Html.Raw(GetVal("RoomsDesc_Suit", "Ayrı oturma alanı, muhteşem manzara ve kişisel hizmetlerin buluştuğu nokta."))
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-body">
+                            <h5 class="card-title text-dark border-bottom pb-2">Aile Odası</h5>
+                            <div class="editable-block mt-3 text-muted" data-key="RoomsDesc_Aile Odası" style="min-height: 50px;">
+                                @Html.Raw(GetVal("RoomsDesc_Aile Odası", "Tüm ailenizle birlikte rahatça vakit geçirebileceğiniz, birbirine bağlantılı geniş ve ferah odalar."))
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mx-auto">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-body">
+                            <h5 class="card-title text-dark border-bottom pb-2">Kral Dairesi</h5>
+                            <div class="editable-block mt-3 text-muted" data-key="RoomsDesc_Kral Dairesi" style="min-height: 50px;">
+                                @Html.Raw(GetVal("RoomsDesc_Kral Dairesi", "Zirvedeki lüks, özel teras, jakuzi ve sınırsız VIP ayrıcalıklarla krallara layık bir konaklama."))
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            
+            <div class="text-center text-muted p-3 mt-5" style="border: 1px dashed #ccc; border-radius: 8px;">
+                <i class="bi bi-info-circle text-info"></i>
+                <em>Not: Odaların fiyat, kapasite ve görsel detayları admin panelindeki "Odalar" bölümünden yönetilmektedir. Buradan sadece müşteri tarafında görünen kategorik tanıtım yazılarını değiştirebilirsiniz.</em>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- Modal for RoomsHeroImage -->
+<div class="modal fade" id="imageModal_RoomsHeroImage" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Konaklama Kapak Resmini Değiştir</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form asp-action="UpdateImage" method="post" enctype="multipart/form-data">
+          <div class="modal-body">
+              <input type="hidden" name="key" value="RoomsHeroImage" />
+              <input type="hidden" name="pageName" value="Rooms" />
+              <input type="file" name="imageFile" class="form-control" accept="image/*" required />
+          </div>
+          <div class="modal-footer">
+              <button type="submit" class="btn btn-primary">Yükle ve Değiştir</button>
+          </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+@section Scripts {
+    <!-- CKEditor 5 CDN (Open Source, No API Key needed) -->
+    <script src="https://cdn.ckeditor.com/ckeditor5/40.0.0/inline/ckeditor.js"></script>
+
+    <style>
+        /* Highlight editable areas on hover */
+        .editable-inline, .editable-block {
+            border: 1px dashed transparent;
+            transition: all 0.3s;
+            position: relative;
+        }
+        .editable-inline:hover, .editable-block:hover {
+            border-color: #28a745;
+            background-color: rgba(40, 167, 69, 0.05);
+            cursor: pointer;
+        }
+        .editable-inline::after, .editable-block::after {
+            content: "\F4CB"; /* bi-pencil */
+            font-family: bootstrap-icons;
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            background: #28a745;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .editable-inline:hover::after, .editable-block:hover::after {
+            opacity: 1;
+        }
+        
+        .ck-editor__editable_inline {
+            border: 1px solid #28a745 !important;
+            background-color: rgba(255, 255, 255, 0.9) !important;
+            color: black !important;
+            padding: 10px;
+        }
+    </style>
+
+    <script>
+        // Array to store editor instances
+        const editors = {};
+
+        // Initialize CKEditor on all editable elements
+        document.querySelectorAll('.editable-inline, .editable-block').forEach(element => {
+            InlineEditor
+                .create(element, {
+                    toolbar: ['bold', 'italic', 'link']
+                })
+                .then(editor => {
+                    editors[element.getAttribute('data-key')] = editor;
+                })
+                .catch(error => {
+                    console.error('CKEditor Init Error:', error);
+                });
+        });
+
+        // Save all changes function
+        function saveAllChanges() {
+            let promises = [];
+            let btn = document.querySelector('.btn-primary');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Kaydediliyor...';
+            
+            Object.keys(editors).forEach(key => {
+                let value = editors[key].getData();
+                
+                let formData = new FormData();
+                formData.append('key', key);
+                formData.append('value', value);
+                formData.append('pageName', 'Rooms');
+                
+                let p = fetch('/SiteSettings/UpdateText', {
+                    method: 'POST',
+                    body: formData
+                });
+                promises.push(p);
+            });
+            
+            Promise.all(promises).then(() => {
+                alert("Tüm değişiklikler başarıyla kaydedildi!");
+                window.location.reload();
+            }).catch(err => {
+                alert("Kaydetme sırasında bir hata oluştu.");
+                console.error(err);
+                btn.disabled = false;
+                btn.innerHTML = '<i class="bi bi-save"></i> Tüm Değişiklikleri Kaydet';
+            });
+        }
+    </script>
+}

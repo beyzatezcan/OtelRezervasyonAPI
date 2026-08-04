@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace otelrezervation.Models;
 
+// gelen mailleri veritabaninda saklamak icin model
 public class ContactMessage
 {
     [Key]
@@ -21,5 +22,5 @@ public class ContactMessage
 
     public DateTime GonderilmeTarihi { get; set; } = DateTime.Now;
 
-    public bool OkunduMu { get; set; } = false; // Admin panelinde kontrol etmek için
+    public bool OkunduMu { get; set; } = false; // admin panelinde mesajı okundu olarak isaretlemek icin
 }

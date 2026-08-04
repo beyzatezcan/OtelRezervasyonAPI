@@ -7,6 +7,9 @@ public interface IRoomService
     // Tum odalari listele
     Task<List<RoomDto>> GetAllRoomsAsync();
 
+    // Filtreli oda listesi
+    Task<List<RoomDto>> GetFilteredRoomsAsync(string? odaTipi, int? minKapasite, decimal? maxFiyat);
+
     // Id'ye gore tek bir oda getir
     Task<RoomDto?> GetRoomByIdAsync(int id);
 
@@ -18,4 +21,7 @@ public interface IRoomService
 
     // Oda sil
     Task<bool> DeleteRoomAsync(int id);
+
+    // V4 Dashboard İstatistikleri için
+    Task<int> GetTotalRoomCountAsync();
 }

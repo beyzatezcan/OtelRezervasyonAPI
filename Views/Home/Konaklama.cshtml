@@ -1,0 +1,150 @@
+@model IEnumerable<otelrezervation.DTOs.RoomDto>
+@inject otelrezervation.Services.ISiteSettingService _siteSettingService
+@{
+    ViewData["Title"] = "Konaklama Seçeneklerimiz";
+    var settings = await _siteSettingService.GetSettingsByPageAsync("Rooms");
+}
+
+<!-- Konaklama Hero Alanı -->
+<div class="luxury-hero" style="background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7)), url('@Html.Raw(settings.FirstOrDefault(s => s.Key == "RoomsHeroImage")?.Value ?? "/images/hotel-hero.jpg")'); min-height: 40vh; display: flex; align-items: center; justify-content: center; text-align: center; padding-top: 80px;">
+    <div class="container">
+        <h1 style="color: var(--gold); font-family: 'Playfair Display', serif; font-size: 3rem; margin-bottom: 20px; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">@Html.Raw(settings.FirstOrDefault(s => s.Key == "RoomsHeroTitle")?.Value ?? "Eşsiz Bir Deneyim Sizi Bekliyor")</h1>
+        <div style="color: var(--white); font-size: 1.1rem; max-width: 600px; margin: 0 auto;">@Html.Raw(settings.FirstOrDefault(s => s.Key == "RoomsHeroDesc")?.Value ?? "Konforun ve lüksün yeniden tanımlandığı odalarımızda unutulmaz bir tatil geçirin.")</div>
+    </div>
+</div>
+
+<div class="container my-5">
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert-luxury mb-5">
+            <i class="bi bi-check-circle-fill me-2"></i> @TempData["SuccessMessage"]
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert-luxury-danger mb-5">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i> @TempData["ErrorMessage"]
+        </div>
+    }
+
+    @if (Model != null && Model.Any())
+    {
+        // Kategorileri fiyatlarına göre (Ucuzdan -> Pahalıya, yani Standart -> Lüks) sıralayalım
+        var groupedRooms = Model.GroupBy(r => r.OdaTipi).OrderBy(g => g.Min(r => r.GecelikFiyat)).ToList();
+
+        foreach (var group in groupedRooms)
+        {
+            var roomType = group.Key;
+            string description = "";
+            string currentImage = "";
+            
+            switch (roomType)
+            {
+                case "Standart": 
+                    description = settings.FirstOrDefault(s => s.Key == "RoomsDesc_Standart")?.Value ?? "Temel ihtiyaçlarınız için lüks standartlarında, konforlu ve şık bir konaklama deneyimi."; 
+                    currentImage = "/images/room-ai-standard.png";
+                    break;
+                case "Lüks": 
+                    description = settings.FirstOrDefault(s => s.Key == "RoomsDesc_Lüks")?.Value ?? "Ekstra konfor ve premium ayrıcalıklarla donatılmış geniş yaşam alanı."; 
+                    currentImage = "/images/room-ai-deluxe.png";
+                    break;
+                case "Suit": 
+                    description = settings.FirstOrDefault(s => s.Key == "RoomsDesc_Suit")?.Value ?? "Ayrı oturma alanı, muhteşem manzara ve kişisel hizmetlerin buluştuğu nokta."; 
+                    currentImage = "/images/room-ai-suite.png";
+                    break;
+                case "Aile Odası": 
+                    description = settings.FirstOrDefault(s => s.Key == "RoomsDesc_Aile Odası")?.Value ?? "Tüm ailenizle birlikte rahatça vakit geçirebileceğiniz, birbirine bağlantılı geniş ve ferah odalar."; 
+                    currentImage = "/images/room-ai-family.png";
+                    break;
+                case "Kral Dairesi": 
+                    description = settings.FirstOrDefault(s => s.Key == "RoomsDesc_Kral Dairesi")?.Value ?? "Zirvedeki lüks, özel teras, jakuzi ve sınırsız VIP ayrıcalıklarla krallara layık bir konaklama."; 
+                    currentImage = "/images/room-ai-king.png";
+                    break;
+                default: 
+                    description = settings.FirstOrDefault(s => s.Key == $"RoomsDesc_{roomType}")?.Value ?? "Lumina Resort ayrıcalıklarıyla eşsiz bir konaklama deneyimi."; 
+                    currentImage = "/images/room-ai-standard.png";
+                    break;
+            }
+
+            <div class="mb-5 pb-5 border-bottom" style="border-color: rgba(212, 175, 55, 0.2) !important;">
+                <div class="section-title text-center mb-5">
+                    <h2 style="color: var(--gold); font-size: 2.5rem;">@roomType Odalar</h2>
+                    <div class="separator mx-auto mb-3" style="width: 80px;"></div>
+                    <div style="color: var(--text-light); max-width: 700px; margin: 0 auto; font-style: italic; font-size: 1.1rem;">"@Html.Raw(description)"</div>
+                </div>
+
+                <div class="row g-4">
+                    @foreach (var room in group)
+                    {
+                        var displayImage = room.ImageUrls != null && room.ImageUrls.Count > 0 ? room.ImageUrls.First() : currentImage;
+                        <div class="col-lg-4 col-md-6">
+                            <div class="room-card">
+                                <a asp-controller="Home" asp-action="RoomDetails" asp-route-id="@room.Id" style="text-decoration: none; color: inherit; display: block;">
+                                    <div class="room-image">
+                                        <img src="@displayImage" alt="Oda @room.OdaNumarasi" style="width: 100%; height: 250px; object-fit: cover;" />
+                                        <div class="room-price">
+                                            <span>@room.GecelikFiyat.ToString("N0") ₺</span>
+                                            <small> / gece</small>
+                                        </div>
+                                    </div>
+                                    <div class="room-info">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <h4>Oda @room.OdaNumarasi</h4>
+                                            @if (room.YorumSayisi > 0)
+                                            {
+                                                <div class="rating" style="color: var(--gold); font-size: 0.9rem;">
+                                                    <i class="bi bi-star-fill"></i> <strong>@room.OrtalamaPuan</strong>
+                                                    <span style="color: var(--text-light); font-size: 0.8rem;">(@room.YorumSayisi değerlendirme)</span>
+                                                </div>
+                                            }
+                                        </div>
+                                        <div class="d-flex gap-3 mb-3 text-muted" style="font-size: 0.9rem;">
+                                            <span><i class="bi bi-tags" style="color: var(--gold);"></i> @room.OdaTipi</span>
+                                            <span><i class="bi bi-people" style="color: var(--gold);"></i> @room.Kapasite Kişi</span>
+                                        </div>
+                                        @if (!string.IsNullOrEmpty(room.EnSonYorum))
+                                        {
+                                            <div class="recent-review mb-3" style="font-style: italic; color: var(--text-light); font-size: 0.85rem; border-left: 2px solid var(--gold); padding-left: 10px;">
+                                                "@room.EnSonYorum"
+                                            </div>
+                                        }
+                                    </div>
+                                </a>
+                                <div class="px-3 pb-3">
+                                    @if (User.Identity != null && User.Identity.IsAuthenticated)
+                                    {
+                                        @if (User.IsInRole("Admin") || User.IsInRole("Receptionist"))
+                                        {
+                                            <a asp-controller="Reservation" asp-action="Create" asp-route-roomId="@room.Id" class="btn-gold-outline">
+                                                Manuel Rezervasyon
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <a asp-controller="Customer" asp-action="BookRoom" asp-route-roomId="@room.Id" class="btn-gold-outline">
+                                                Rezervasyon Yap
+                                            </a>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <a asp-controller="Auth" asp-action="Login" class="btn-gold-outline">
+                                            Rezervasyon İçin Giriş Yap
+                                        </a>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="col-12 text-center" style="padding: 60px 0;">
+            <i class="bi bi-building" style="font-size: 4rem; color: var(--gold); opacity: 0.4;"></i>
+            <p class="mt-3" style="color: var(--text-light); font-size: 1.1rem;">Şu an sistemimizde kayıtlı oda bulunmamaktadır.</p>
+        </div>
+    }
+</div>

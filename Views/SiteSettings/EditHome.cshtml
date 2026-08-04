@@ -1,0 +1,235 @@
+@model List<otelrezervation.Models.SiteSetting>
+
+@{
+    ViewData["Title"] = "Ana Sayfa (Düzenleme Modu)";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    
+    // Helper to get value
+    string GetVal(string key, string defaultVal) {
+        var setting = Model.FirstOrDefault(s => s.Key == key);
+        return setting?.Value ?? defaultVal;
+    }
+}
+
+<!-- Frontend CSS for accurate preview -->
+<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+<div class="d-flex justify-content-between align-items-center mb-4 mt-3">
+    <h4><i class="bi bi-brush text-success"></i> Ana Sayfa (Görsel Düzenleyici)</h4>
+    <div>
+        <button class="btn btn-primary" onclick="saveAllChanges()"><i class="bi bi-save"></i> Tüm Değişiklikleri Kaydet</button>
+        <a href="/SiteSettings/PageManager" class="btn btn-secondary">İptal</a>
+    </div>
+</div>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+<div class="visual-editor-container border rounded bg-white shadow-sm" style="overflow: hidden; pointer-events: auto;">
+    
+    <!-- ========== HERO SECTION PREVIEW & EDIT ========== -->
+    <div class="position-relative">
+        <!-- Edit Image Button Overlay -->
+        <div class="position-absolute top-0 end-0 m-3 z-3">
+            <button class="btn btn-dark btn-sm shadow" data-bs-toggle="modal" data-bs-target="#imageModal_HomeHeroImage">
+                <i class="bi bi-image"></i> Arka Planı Değiştir
+            </button>
+        </div>
+
+        <section class="hero-section" style="background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.7)), url('@GetVal("HomeHeroImage", "/images/hotel-hero.jpg")') center/cover;">
+            <div class="hero-content">
+                <div class="hero-subtitle editable-inline" data-key="HomeHeroSubtitle">@Html.Raw(GetVal("HomeHeroSubtitle", "Luxury Resort & SPA"))</div>
+                <h1 class="editable-inline" data-key="HomeHeroTitle">@Html.Raw(GetVal("HomeHeroTitle", "Unutulmaz Bir Tatil<br/>Deneyimine Hoşgeldiniz"))</h1>
+                <div class="hero-desc editable-inline" data-key="HomeHeroDesc">@Html.Raw(GetVal("HomeHeroDesc", "Akdeniz'in eşsiz mavisinde lüks, konfor ve huzuru bir arada yaşayın."))</div>
+                <a href="javascript:void(0)" class="btn-gold">Odalarımızı Keşfedin (Tıklanamaz)</a>
+            </div>
+        </section>
+    </div>
+
+    <!-- ========== OTEL ÖZELLİKLERİ PREVIEW & EDIT ========== -->
+    <section class="section" style="background: var(--dark-soft);">
+        <div class="container">
+            <div class="section-title">
+                <div class="overline editable-inline" data-key="HomeFeaturesOverline">@Html.Raw(GetVal("HomeFeaturesOverline", "Ayrıcalıklar"))</div>
+                <h2 class="editable-inline" data-key="HomeFeaturesTitle">@Html.Raw(GetVal("HomeFeaturesTitle", "Sizin İçin Sunduklarımız"))</h2>
+                <div class="divider"></div>
+            </div>
+            
+            <div class="row g-4 mt-4">
+                <div class="col-lg-3 col-md-6">
+                    <div class="feature-item p-3 border rounded text-center">
+                        <div class="feature-icon mb-2"><i class="bi bi-water text-primary fs-3"></i></div>
+                        <h5 class="editable-inline fw-bold" data-key="HomeFeature1_Title">@Html.Raw(GetVal("HomeFeature1_Title", "Infinity Havuz"))</h5>
+                        <div class="editable-block text-muted" data-key="HomeFeature1_Desc">@Html.Raw(GetVal("HomeFeature1_Desc", "<p>Deniz manzaralı açık ve kapalı yüzme havuzlarımızda serinleyin.</p>"))</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="feature-item p-3 border rounded text-center">
+                        <div class="feature-icon mb-2"><i class="bi bi-flower1 text-primary fs-3"></i></div>
+                        <h5 class="editable-inline fw-bold" data-key="HomeFeature2_Title">@Html.Raw(GetVal("HomeFeature2_Title", "SPA & Wellness"))</h5>
+                        <div class="editable-block text-muted" data-key="HomeFeature2_Desc">@Html.Raw(GetVal("HomeFeature2_Desc", "<p>Profesyonel terapistlerimizle kendinizi baştan yaratın.</p>"))</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="feature-item p-3 border rounded text-center">
+                        <div class="feature-icon mb-2"><i class="bi bi-cup-hot text-primary fs-3"></i></div>
+                        <h5 class="editable-inline fw-bold" data-key="HomeFeature3_Title">@Html.Raw(GetVal("HomeFeature3_Title", "Fine Dining"))</h5>
+                        <div class="editable-block text-muted" data-key="HomeFeature3_Desc">@Html.Raw(GetVal("HomeFeature3_Desc", "<p>Ödüllü şeflerimizin hazırladığı dünya mutfağının tadını çıkarın.</p>"))</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="feature-item p-3 border rounded text-center">
+                        <div class="feature-icon mb-2"><i class="bi bi-wifi text-primary fs-3"></i></div>
+                        <h5 class="editable-inline fw-bold" data-key="HomeFeature4_Title">@Html.Raw(GetVal("HomeFeature4_Title", "Ücretsiz Wi-Fi"))</h5>
+                        <div class="editable-block text-muted" data-key="HomeFeature4_Desc">@Html.Raw(GetVal("HomeFeature4_Desc", "<p>Tüm otel alanlarında yüksek hızlı internet erişimi.</p>"))</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== ODALAR BÖLÜMÜ BAŞLIĞI PREVIEW & EDIT ========== -->
+    <section class="section">
+        <div class="container">
+            <div class="section-title">
+                <div class="overline editable-inline" data-key="HomeRoomsOverline">@Html.Raw(GetVal("HomeRoomsOverline", "Konaklama"))</div>
+                <h2 class="editable-inline" data-key="HomeRoomsTitle">@Html.Raw(GetVal("HomeRoomsTitle", "Odalarımız & Süitler"))</h2>
+                <div class="editable-inline" data-key="HomeRoomsDesc">@Html.Raw(GetVal("HomeRoomsDesc", "Her biri özenle tasarlanmış odalarımızda lüksün ve konforun tadını çıkarın."))</div>
+                <div class="divider"></div>
+            </div>
+            <div class="text-center text-muted p-5" style="border: 2px dashed #ccc; border-radius: 8px;">
+                <i class="bi bi-door-open" style="font-size: 3rem;"></i><br/>
+                <em>Burada sistemdeki odalar dinamik olarak listelenmektedir.<br/>Oda yönetimi "Odalar" sekmesinden yapılmaktadır.</em>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- Modal for HomeHeroImage -->
+<div class="modal fade" id="imageModal_HomeHeroImage" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Ana Sayfa Kapak Resmini Değiştir</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form asp-action="UpdateImage" method="post" enctype="multipart/form-data">
+          <div class="modal-body">
+              <input type="hidden" name="key" value="HomeHeroImage" />
+              <input type="hidden" name="pageName" value="Home" />
+              <input type="file" name="imageFile" class="form-control" accept="image/*" required />
+          </div>
+          <div class="modal-footer">
+              <button type="submit" class="btn btn-primary">Yükle ve Değiştir</button>
+          </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+@section Scripts {
+    <!-- CKEditor 5 CDN (Open Source, No API Key needed) -->
+    <script src="https://cdn.ckeditor.com/ckeditor5/40.0.0/inline/ckeditor.js"></script>
+
+    <style>
+        /* Highlight editable areas on hover */
+        .editable-inline, .editable-block {
+            border: 1px dashed transparent;
+            transition: all 0.3s;
+            position: relative;
+        }
+        .editable-inline:hover, .editable-block:hover {
+            border-color: #28a745;
+            background-color: rgba(40, 167, 69, 0.05);
+            cursor: pointer;
+        }
+        .editable-inline::after, .editable-block::after {
+            content: "\F4CB"; /* bi-pencil */
+            font-family: bootstrap-icons;
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            background: #28a745;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .editable-inline:hover::after, .editable-block:hover::after {
+            opacity: 1;
+        }
+        
+        .ck-editor__editable_inline {
+            border: 1px dashed rgba(255, 255, 255, 0.4) !important;
+            background-color: transparent !important;
+            color: inherit !important;
+            padding: 2px 5px !important;
+            border-radius: 4px;
+        }
+        .ck-editor__editable_inline.ck-focused {
+            border: 1px dashed #28a745 !important;
+            background-color: rgba(0, 0, 0, 0.5) !important;
+            color: white !important;
+        }
+    </style>
+
+    <script>
+        // Array to store editor instances
+        const editors = {};
+
+        // Initialize CKEditor on all editable elements
+        document.querySelectorAll('.editable-inline, .editable-block').forEach(element => {
+            InlineEditor
+                .create(element, {
+                    toolbar: ['bold', 'italic', 'link']
+                })
+                .then(editor => {
+                    editors[element.getAttribute('data-key')] = editor;
+                })
+                .catch(error => {
+                    console.error('CKEditor Init Error:', error);
+                });
+        });
+
+        // Save all changes function
+        function saveAllChanges() {
+            let promises = [];
+            let btn = document.querySelector('.btn-primary');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Kaydediliyor...';
+            
+            Object.keys(editors).forEach(key => {
+                let value = editors[key].getData();
+                
+                let formData = new FormData();
+                formData.append('key', key);
+                formData.append('value', value);
+                formData.append('pageName', 'Home');
+                
+                let p = fetch('/SiteSettings/UpdateText', {
+                    method: 'POST',
+                    body: formData
+                });
+                promises.push(p);
+            });
+            
+            Promise.all(promises).then(() => {
+                alert("Tüm değişiklikler başarıyla kaydedildi!");
+                window.location.reload();
+            }).catch(err => {
+                alert("Kaydetme sırasında bir hata oluştu.");
+                console.error(err);
+                btn.disabled = false;
+                btn.innerHTML = '<i class="bi bi-save"></i> Tüm Değişiklikleri Kaydet';
+            });
+        }
+    </script>
+}

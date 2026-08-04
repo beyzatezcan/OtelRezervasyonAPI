@@ -69,7 +69,8 @@ a {
     z-index: 1000;
     padding: 20px 0;
     transition: var(--transition);
-    background: transparent;
+    background: rgba(26, 26, 26, 0.4);
+    backdrop-filter: blur(5px);
 }
 
 .luxury-navbar.scrolled {
@@ -82,9 +83,9 @@ a {
 .luxury-navbar .navbar-brand {
     font-family: var(--font-heading);
     font-size: 1.6rem;
-    color: var(--white) !important;
+    color: var(--gold) !important;
     letter-spacing: 3px;
-    font-weight: 600;
+    font-weight: 700;
     transition: var(--transition);
 }
 
@@ -93,14 +94,20 @@ a {
 }
 
 .luxury-navbar .nav-link {
-    color: var(--white) !important;
-    font-family: var(--font-body);
+    color: rgba(255, 255, 255, 0.85) !important;
+    font-family: var(--font-heading);
     font-size: 0.85rem;
-    font-weight: 400;
+    font-weight: 700;
     letter-spacing: 1.5px;
     text-transform: uppercase;
     padding: 8px 16px !important;
     position: relative;
+    text-shadow: none;
+}
+
+.luxury-navbar.scrolled .nav-link {
+    color: var(--white) !important;
+    text-shadow: none;
 }
 
 .luxury-navbar .nav-link::after {
@@ -192,9 +199,9 @@ a {
     top: 0; left: 0; right: 0; bottom: 0;
     background: linear-gradient(
         to bottom,
-        rgba(26, 26, 26, 0.4) 0%,
-        rgba(26, 26, 26, 0.2) 50%,
-        rgba(26, 26, 26, 0.8) 100%
+        rgba(26, 26, 26, 0.5) 0%,
+        rgba(26, 26, 26, 0.3) 50%,
+        rgba(26, 26, 26, 0.85) 100%
     );
 }
 
@@ -212,31 +219,34 @@ a {
 
 .hero-content .hero-subtitle {
     font-family: var(--font-body);
-    font-size: 0.9rem;
-    font-weight: 400;
+    font-size: 0.95rem;
+    font-weight: 600;
     letter-spacing: 6px;
     text-transform: uppercase;
     color: var(--gold);
     margin-bottom: 20px;
     animation: fadeInUp 1s ease 0.3s both;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.5);
 }
 
 .hero-content h1 {
     font-family: var(--font-heading);
-    font-size: 4rem;
-    font-weight: 400;
+    font-size: 4.2rem;
+    font-weight: 700;
     color: var(--white);
     line-height: 1.2;
     margin-bottom: 24px;
     animation: fadeInUp 1s ease 0.6s both;
+    text-shadow: 0 3px 15px rgba(0,0,0,0.6);
 }
 
 .hero-content .hero-desc {
-    font-size: 1.1rem;
-    color: rgba(255,255,255,0.8);
-    font-weight: 300;
+    font-size: 1.15rem;
+    color: rgba(255,255,255,0.9);
+    font-weight: 500;
     margin-bottom: 40px;
     animation: fadeInUp 1s ease 0.9s both;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.5);
 }
 
 .hero-content .btn-gold {

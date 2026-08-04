@@ -37,8 +37,14 @@
             </div>
         </div>
 
+        <div class="mb-4">
+            <label asp-for="OzelIstekler" class="form-label">Özel İstekleriniz (İsteğe Bağlı)</label>
+            <textarea asp-for="OzelIstekler" class="form-control" rows="3" placeholder="Örn: Havalimanı transferi, Bebek yatağı..."></textarea>
+            <small style="color: var(--text-light); font-size: 0.8rem;">Otelimize bildirmek istediğiniz özel bir notunuz varsa buraya yazabilirsiniz.</small>
+        </div>
+
         <button type="submit" class="btn-gold"><i class="bi bi-check2-circle me-2"></i>Rezervasyonu Onayla</button>
-        <a asp-controller="Home" asp-action="Index" class="btn-gold-outline" style="width: 100%; text-align: center; margin-top: 10px; display: block;">İptal</a>
+        <a asp-controller="Home" asp-action="Konaklama" class="btn-gold-outline" style="width: 100%; text-align: center; margin-top: 10px; display: block;">İptal</a>
     </form>
 </div>
 
@@ -65,8 +71,7 @@
                 altInput: true,
                 altFormat: "d F Y",
                 minDate: "today",
-                disable: disableDates,
-                inline: true
+                disable: disableDates
             };
 
             flatpickr("#GirisTarihi", fpOptions);

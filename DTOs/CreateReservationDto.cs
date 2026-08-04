@@ -18,4 +18,6 @@ public class CreateReservationDto
 
     [Required(ErrorMessage = "Çıkış tarihi zorunludur.")]
     public DateTime CikisTarihi { get; set; }
+
+    public string? OzelIstekler { get; set; }
 }
