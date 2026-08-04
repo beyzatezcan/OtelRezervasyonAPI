@@ -1,125 +1,117 @@
-# 🏨 Otel Rezervasyon Yönetim Sistemi
+# 🏨 Lumina Resort & SPA - Tam Kapsamlı Otel Yönetim Sistemi
 
-ASP.NET Core MVC ile geliştirilmiş, rol tabanlı yetkilendirme ve akıllı takvim entegrasyonuna sahip full-stack bir otel rezervasyon yönetim sistemidir.
+ASP.NET Core MVC ile geliştirilmiş, lüks ve modern bir arayüze sahip, dinamik CMS (İçerik Yönetim Sistemi), rol tabanlı yetkilendirme ve akıllı takvim entegrasyonu barındıran full-stack bir otel rezervasyon platformudur.
+
+![Lumina Resort Hero](docs/images/customer_home.png)
+
+## 🌟 Öne Çıkan Özellikler (V2 Güncellemesi)
+
+- **Tamamen Dinamik İçerik Yönetimi (Headless CMS):** Ana sayfa, Hakkımızda, Odalar ve İletişim sayfalarındaki tüm metin ve görseller kod yazmadan Admin Paneli üzerinden, **Müşteri Gözünden Gör** ekranındaki *Inline Editor* (Canlı Düzenleyici) ile anında değiştirilebilir.
+- **Lüks ve Modern Frontend Tasarımı:** UI/UX prensiplerine uygun, altın (gold) ve koyu tema ağırlıklı, premium hissiyatı veren responsive tasarım.
+- **Rol Bazlı Yönetim (RBAC):** Admin, Resepsiyonist, Pazarlama (Marketing) ve Müşteri rolleri için tamamen izole edilmiş sayfa erişimleri.
+- **Akıllı Rezervasyon ve Takvim:** Geçmiş tarihe veya aynı güne alınan rezervasyonları engelleyen, dolu günleri takvimde kilitleyen akıllı doğrulama sistemi.
+- **Entegre Blog (Haber) Sistemi:** Otelle ilgili haberleri ve kampanyaları yayınlayabileceğiniz yönetim arayüzü.
+- **Mail Bildirimleri:** Rezervasyon onayları ve iletişim formu taleplerinin e-posta ile otomatik iletilmesi.
 
 ## 🛠️ Teknoloji Yığını
 
 | Teknoloji | Kullanım Amacı |
 |-----------|---------------|
-| **ASP.NET Core 10** | Web sunucusu ve MVC çatısı |
+| **ASP.NET Core 10** | Web sunucusu ve MVC (Model-View-Controller) çatısı |
 | **Entity Framework Core** | ORM (Veritabanı işlemleri) |
-| **PostgreSQL** | İlişkisel veritabanı |
+| **PostgreSQL** | İlişkisel veritabanı (Performanslı ve güvenli veri saklama) |
 | **Riok.Mapperly** | Compile-time DTO ↔ Entity dönüşümü |
-| **Bootstrap 5** | Responsive arayüz tasarımı |
-| **Flatpickr** | Akıllı tarih seçici takvim |
-| **Cookie Authentication** | Oturum ve rol yönetimi |
-| **Swagger (OpenAPI)** | API test arayüzü |
+| **Bootstrap 5 & Vanilla CSS** | Modern ve responsive arayüz tasarımı |
+| **CKEditor 5 (Inline)** | Canlı sayfa içi içerik düzenleme (CMS) |
+| **Flatpickr** | Akıllı tarih seçici (Rezervasyon takvimi) |
+| **Cookie Authentication** | Güvenli oturum ve rol (RBAC) yönetimi |
+| **Swagger (OpenAPI)** | RESTful API test arayüzü |
 
-## 📐 Mimari
+---
 
-Proje **Katmanlı Mimari (Layered Architecture)** prensibiyle tasarlanmıştır:
+## 📸 Sistemden Görünümler
 
-```
-Controller (İstek Yönetimi)
-    ↓
-Service (İş Kuralları)
-    ↓
-Mapper (DTO ↔ Entity Dönüşümü)
-    ↓
-DbContext → PostgreSQL
-```
+### Odalar ve Müşteri Paneli
+![Odalar Görünümü](docs/images/customer_rooms.png)
+*Müşteriler, oda detaylarını inceleyebilir, yorumlara göz atabilir ve müsaitlik durumuna göre anında rezervasyon yapabilir.*
 
-- **Models/** → Veritabanı tabloları (Entity)
-- **DTOs/** → Veri Aktarım Nesneleri (Dış dünyaya güvenli veri)
-- **Mappings/** → Riok.Mapperly ile otomatik dönüşüm kuralları
-- **Services/** → Interface + implementasyon (DI ile enjekte edilir)
-- **Controllers/Api/** → RESTful API endpoint'leri (JSON)
-- **Controllers/Web/** → MVC Controller'ları (HTML View döndürür)
-- **Views/** → Razor (.cshtml) sayfaları
+### Yönetim Paneli - Ana Sayfa
+![Yönetim Paneli](docs/images/admin_dashboard.png)
+*Otelin genel durumu, anlık müsaitlik sorgulama ve son rezervasyonları görebileceğiniz özet ekranı.*
 
-## 👥 Roller ve Yetkiler
+### Sayfa Yönetimi (CMS)
+![CMS Sayfası](docs/images/admin_cms.png)
+*Pazarlama ve yöneticilerin hiçbir kod bilgisine ihtiyaç duymadan sitenin her alanını güncelleyebildiği bölüm.*
 
-### Müşteri (Customer)
-- Ana sayfadan oda vitrinini görüntüleme
-- Akıllı takvim ile oda rezervasyonu yapma (dolu günler kırmızı ve kilitli)
-- Kendi rezervasyonlarını listeleme ve iptal etme
+---
 
-### Yönetici (Admin)
-- Müşteri yönetimi (CRUD)
-- Oda yönetimi (CRUD)
-- Tüm rezervasyonları görüntüleme ve silme
-- Herhangi bir müşteri adına manuel rezervasyon oluşturma
-- Swagger API test paneline erişim
+## 👥 Roller ve Yetkiler Modeli
 
-## 🔒 Güvenlik Katmanları
+### 1. Yönetici (Admin)
+- Sistemin mutlak hakimidir.
+- Müşteri, Personel (yetki atama dahil) ve Oda yönetimini (CRUD) tam erişimle gerçekleştirir.
+- Tüm sayfa içeriklerini (CMS) düzenleyebilir.
+- Manuel rezervasyon yapabilir veya var olanları silebilir.
 
-- Rol bazlı sayfa erişim kontrolü (`[Authorize(Roles = "...")]`)
-- Tarih çakışması kontrolü (aynı odaya çift rezervasyon engeli)
-- Geçmiş tarihe rezervasyon engeli
-- Email ve oda numarası benzersizlik kontrolü
-- Aktif rezervasyonu olan oda/müşteri silme engeli
-- Müşterinin yalnızca kendi rezervasyonlarını iptal edebilmesi
+### 2. Resepsiyonist (Receptionist)
+- Sadece `Dashboard` ve `Rezervasyonlar` modüllerine erişebilir.
+- Müşteriler adına manuel rezervasyon yapabilir.
+- Rezervasyon durumlarını "Check-in", "Check-out" veya "İptal Edildi" olarak güncelleyebilir. Sistemi silemez, sadece yönetebilir.
 
-## 📅 Akıllı Takvim (Flatpickr)
+### 3. Pazarlama (Marketing)
+- Yalnızca `Blog (Haberler)` ve `Sayfa Yönetimi (CMS)` modüllerine erişir.
+- Sitenin ön yüzündeki resimleri, sloganları ve tanıtım metinlerini değiştirir. Kampanyaları yönetir.
+- Rezervasyon veya müşteri gizliliği gerektiren alanlara erişimi yoktur.
 
-Rezervasyon formlarında **Flatpickr** kütüphanesi entegre edilmiştir:
-- Seçilen odaya ait dolu tarihler veritabanından çekilir
-- Dolu günler takvimde **kırmızı, üstü çizili ve tıklanamaz** olarak gösterilir
-- Yönetici panelinde oda değiştirildiğinde takvim anlık olarak güncellenir
+### 4. Müşteri (Customer)
+- Sadece `Müşteri Paneli` modüllerine erişir.
+- Akıllı takvim ile online rezervasyon yapar (dolu günler kırmızı ve tıklanamaz).
+- Konaklaması biten odalara puan/değerlendirme bırakabilir.
+- Kendi rezervasyon geçmişini görüntüleyebilir. Şifre ve profil güncelleyebilir.
 
-## 🗄️ Veritabanı Şeması
+---
 
-```
-User (1) ──────── (N) Reservation
-Room (1) ──────── (N) Reservation
-```
+## 📐 Proje Mimarisi
 
-| Tablo | Alanlar |
-|-------|---------|
-| **Users** | Id, Ad, Soyad, Email, Telefon, Password, Role |
-| **Rooms** | Id, OdaNumarasi, GecelikFiyat |
-| **Reservations** | Id, UserId (FK), RoomId (FK), GirisTarihi, CikisTarihi |
+Proje **Katmanlı Mimari (Layered Architecture)** prensibiyle inşa edilmiş olup RESTful API ve MVC yapılarını bir arada çalıştırabilmektedir:
 
-## 🚀 Kurulum
-
-### Gereksinimler
-- [.NET 10 SDK](https://dotnet.microsoft.com/download)
-- [PostgreSQL](https://www.postgresql.org/download/)
-
-### Adımlar
-
-```bash
-# 1. Projeyi klonla
-git clone https://github.com/beyzatezcan/OtelRezervasyonAPI.git
-cd OtelRezervasyonAPI
-
-# 2. appsettings.json içindeki bağlantı bilgilerini kendi PostgreSQL ayarlarına göre düzenle
-
-# 3. Veritabanını oluştur (Migration uygula)
-dotnet ef database update
-
-# 4. Uygulamayı çalıştır
-dotnet run
-```
-
-Uygulama varsayılan olarak `http://localhost:5171` adresinde açılır.
-
-### İlk Giriş
-- **Yönetici:** `admin@otel.com` / `123456`
-- Müşteri hesabı oluşturmak için Kayıt Ol sayfasını kullanın.
-
-## 📁 Proje Yapısı
-
-```
+```text
 otelrezervation/
-├── Models/          → Entity sınıfları + DbContext
-├── DTOs/            → Veri aktarım nesneleri
-├── Mappings/        → Riok.Mapperly dönüşüm kuralları
-├── Services/        → İş mantığı (Interface + Implementasyon)
+├── Models/          → Entity sınıfları (Tablolar) ve AppDbContext
+├── DTOs/            → Dış dünyaya açılan güvenli Veri Aktarım Nesneleri
+├── Mappings/        → Entity ↔ DTO dönüşüm profilleri (Mapperly)
+├── Services/        → İş Kuralları (Business Logic / DI ile enjekte edilir)
 ├── Controllers/
-│   ├── Api/         → RESTful API (JSON)
-│   └── Web/         → MVC (HTML View)
-├── Views/           → Razor sayfaları (.cshtml)
-├── Migrations/      → EF Core migration geçmişi
-└── Program.cs       → Uygulama başlangıç noktası
+│   ├── Api/         → JSON dönen dışa açık servisler
+│   └── Web/         → Arayüzü (HTML/CSS) oluşturan MVC Controller'lar
+├── Views/           → Razor (.cshtml) arayüz şablonları
+└── wwwroot/         → Statik dosyalar (CSS, JS, Resimler)
 ```
+
+## 🚀 Kurulum Adımları
+
+1. **Gereksinimler:**
+   - .NET 10 SDK
+   - PostgreSQL veritabanı
+
+2. **Projeyi Klonlama:**
+   ```bash
+   git clone https://github.com/beyzatezcan/OtelRezervasyonAPI.git
+   cd OtelRezervasyonAPI
+   ```
+
+3. **Veritabanı Ayarları:**
+   `appsettings.json` dosyasındaki `DefaultConnection` satırını kendi yerel PostgreSQL sunucu bilgilerinize göre (Host, Port, User, Password, Database) güncelleyin.
+
+4. **Migration (Veritabanı Oluşturma):**
+   ```bash
+   dotnet ef database update
+   ```
+
+5. **Uygulamayı Başlatma:**
+   ```bash
+   dotnet run
+   ```
+
+6. **Varsayılan Test Girişleri:**
+   *Sistemi test etmek için Auth menüsünden kayıt olabilir, ardından Personel Yönetimi sayfasından rolünüzü Admin yaparak tüm menüleri aktif edebilirsiniz.*
