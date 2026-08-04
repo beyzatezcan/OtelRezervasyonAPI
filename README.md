@@ -96,8 +96,8 @@ otelrezervation/
 
 2. **Projeyi Klonlama:**
    ```bash
-   git clone https://github.com/beyzatezcan/OtelRezervasyonAPI.git
-   cd OtelRezervasyonAPI
+   git clone https://github.com/beyzatezcan/OtelRezervasyonSistemi.git
+   cd OtelRezervasyonSistemi
    ```
 
 3. **Veritabanı Ayarları:**
